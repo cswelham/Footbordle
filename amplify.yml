@@ -7,10 +7,10 @@ frontend:
     # IMPORTANT - Please verify your build commands
     build:
       commands: 
-        - 'npm run docs:build'
+        - npm run build
   artifacts:
     # IMPORTANT - Please verify your build output directory
-    baseDirectory: docs/.vuepress/dist
+    baseDirectory: build
     files:
       - '**/*'
   cache:
