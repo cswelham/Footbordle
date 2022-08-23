@@ -68,7 +68,11 @@
   background-color: orange;
 }
 
-
 .h2-pad {
   padding-top: 20px;
+}
+
+.item-format {
+  height: 400px;
+  font-size: medium;
 }

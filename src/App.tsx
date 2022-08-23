@@ -2,9 +2,8 @@ import { Autocomplete, Box, Button, Grid, Paper, styled, TextField } from '@mui/
 import React, { useState } from 'react';
 import './App.css';
 import useWindowDimensions from './Tools/Window';
-//import "@aws-amplify/ui-react/styles.css";
+import "@aws-amplify/ui-react/styles.css";
 import { withAuthenticator } from "@aws-amplify/ui-react";
-import { Button as AmplifyButton } from "@aws-amplify/ui-react";
 
 // Interface for a player
 interface Player {
@@ -65,7 +64,7 @@ function App(props?: AppProps) {
     textAlign: 'center',
     color: theme.palette.text.secondary,
     fontSize: 12,
-    height: 20
+    height: 40,
   }));
 
   // On autocomplete change
@@ -480,7 +479,7 @@ function App(props?: AppProps) {
 
           <Grid container spacing={1}>
               <Grid item xs={12/7}>
-                <Item><b>Overall</b></Item>
+                <Item className="item-format"><b>Overall</b></Item>
               </Grid>
               <Grid item xs={12/7}>
                 <Item><b>Pace</b></Item>
@@ -569,7 +568,9 @@ function App(props?: AppProps) {
         <Button variant="contained" className='button-restart' style={{backgroundColor: 'silver', color: 'black'}} onClick={onRestart}>
           <b>Restart</b>
         </Button>
-        <AmplifyButton onClick={props?.signOut}>Sign Out</AmplifyButton>
+        <Button variant="contained" className='button-restart' style={{backgroundColor: 'silver', color: 'black'}} onClick={props?.signOut}>
+          <b>Sign Out</b>
+        </Button>
       </div>
     </div>
   );
