@@ -2,6 +2,9 @@ import { Autocomplete, Box, Button, Grid, Paper, styled, TextField } from '@mui/
 import React, { useState } from 'react';
 import './App.css';
 import useWindowDimensions from './Tools/Window';
+//import "@aws-amplify/ui-react/styles.css";
+import { withAuthenticator } from "@aws-amplify/ui-react";
+import { Button as AmplifyButton } from "@aws-amplify/ui-react";
 
 // Interface for a player
 interface Player {
@@ -15,7 +18,12 @@ interface Player {
   physical: number
 }
 
-function App() {
+// Interface for AppProps
+interface AppProps {
+  signOut?: any,
+}
+
+function App(props?: AppProps) {
   // List of all footballers
   const playerList: Player[] = [
     {label: 'Lionel Messi', overall: 93, pace: 85, shooting: 92, passing: 91, dribbling: 95, defending: 34, physical: 60},
@@ -561,9 +569,10 @@ function App() {
         <Button variant="contained" className='button-restart' style={{backgroundColor: 'silver', color: 'black'}} onClick={onRestart}>
           <b>Restart</b>
         </Button>
+        <AmplifyButton onClick={props?.signOut}>Sign Out</AmplifyButton>
       </div>
     </div>
   );
 }
 
-export default App;
+export default withAuthenticator(App);
