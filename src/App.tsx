@@ -487,67 +487,41 @@ function App(props?: AppProps) {
             }
           </Box>
 
-          <h2>Correct Player</h2>
-          <Box sx={{ flexGrow: 1 }}>
-          {finished === "" 
+          
+          {finished === "L" 
               ? <>
-                <Grid container spacing={0.5} style={{paddingTop: 10}}>
-                  <Grid item xs={3}>
-                    <Item><b></b></Item>
+                <h2>Correct Player</h2>
+                <Box sx={{ flexGrow: 1 }}>
+                  <Grid container spacing={0.5} style={{paddingTop: 10}}>
+                    <Grid item xs={3}>
+                      <Item style={{backgroundColor: "yellow"}}>{correctPlayer.label}</Item>
+                    </Grid>
+                    <Grid item xs={9/7}>
+                      <Item style={{backgroundColor: "yellow"}}>{correctPlayer.overall}</Item>
+                    </Grid>
+                    <Grid item xs={9/7}>
+                      <Item style={{backgroundColor: "yellow"}}>{correctPlayer.pace}</Item>
+                    </Grid>
+                    <Grid item xs={9/7}>
+                      <Item style={{backgroundColor: "yellow"}}>{correctPlayer.shooting}</Item>
+                    </Grid>
+                    <Grid item xs={9/7}>
+                      <Item style={{backgroundColor: "yellow"}}>{correctPlayer.passing}</Item>
+                    </Grid>
+                    <Grid item xs={9/7}>
+                      <Item style={{backgroundColor: "yellow"}}>{correctPlayer.dribbling}</Item>
+                    </Grid>
+                    <Grid item xs={9/7}>
+                      <Item style={{backgroundColor: "yellow"}}>{correctPlayer.defending}</Item>
+                    </Grid>
+                    <Grid item xs={9/7}>
+                      <Item style={{backgroundColor: "yellow"}}>{correctPlayer.physical}</Item>
+                    </Grid>
                   </Grid>
-                  <Grid item xs={9/7}>
-                    <Item><b></b></Item>
-                  </Grid>
-                  <Grid item xs={9/7}>
-                    <Item><b></b></Item>
-                  </Grid>
-                  <Grid item xs={9/7}>
-                    <Item><b></b></Item>
-                  </Grid>
-                  <Grid item xs={9/7}>
-                    <Item><b></b></Item>
-                  </Grid>
-                  <Grid item xs={9/7}>
-                    <Item><b></b></Item>
-                  </Grid>
-                  <Grid item xs={9/7}>
-                    <Item><b></b></Item>
-                  </Grid>
-                  <Grid item xs={9/7}>
-                    <Item><b></b></Item>
-                  </Grid>
-                </Grid>
+                </Box>
               </>
-              : <>
-                <Grid container spacing={0.5} style={{paddingTop: 10}}>
-                  <Grid item xs={3}>
-                    <Item style={{backgroundColor: "yellow"}}>{correctPlayer.label}</Item>
-                  </Grid>
-                  <Grid item xs={9/7}>
-                    <Item style={{backgroundColor: "yellow"}}>{correctPlayer.overall}</Item>
-                  </Grid>
-                  <Grid item xs={9/7}>
-                    <Item style={{backgroundColor: "yellow"}}>{correctPlayer.pace}</Item>
-                  </Grid>
-                  <Grid item xs={9/7}>
-                    <Item style={{backgroundColor: "yellow"}}>{correctPlayer.shooting}</Item>
-                  </Grid>
-                  <Grid item xs={9/7}>
-                    <Item style={{backgroundColor: "yellow"}}>{correctPlayer.passing}</Item>
-                  </Grid>
-                  <Grid item xs={9/7}>
-                    <Item style={{backgroundColor: "yellow"}}>{correctPlayer.dribbling}</Item>
-                  </Grid>
-                  <Grid item xs={9/7}>
-                    <Item style={{backgroundColor: "yellow"}}>{correctPlayer.defending}</Item>
-                  </Grid>
-                  <Grid item xs={9/7}>
-                    <Item style={{backgroundColor: "yellow"}}>{correctPlayer.physical}</Item>
-                  </Grid>
-                </Grid>
-              </>
+              : null
             }
-          </Box>
         </div>
 
         <div className="two" style={{height: height * 0.65, width: width/2, textAlign: 'center'}}>
