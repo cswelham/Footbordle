@@ -15,7 +15,7 @@
 
 .App-header {
   text-align: center;
-  background-color: #282c34;
+  background-color: #1e88e5;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -39,10 +39,21 @@
 
 .container {
   margin: auto;
+  background-color: white;
+}
+
+.container-black {
+  margin: auto;
   background-color: #282c34;
 }
 
 .one {
+  background: white;
+  float: left;
+  color: black;
+}
+
+.one-black {
   background: #282c34;
   float: left;
   color: white;
@@ -50,11 +61,23 @@
 
 .two {
   margin-left: 50%;
+  background: white;
+  color: black;
+}
+
+.two-black {
+  margin-left: 50%;
   background: #282c34;
   color: white;
 }
 
 .button-restart {
+  height: 50px;
+  width: 300px;
+  font-size: 30px;
+}
+
+.button-restart-silver {
   height: 50px;
   width: 400px;
   font-size: 30px;
@@ -65,14 +88,21 @@
   height: 50px;
   width: 300px;
   font-size: 20px;
-  background-color: orange;
+}
+
+.button-guess-silver {
+  height: 50px;
+  width: 300px;
+  font-size: 20px;
+  background-color: silver;
 }
 
 .h2-pad {
   padding-top: 20px;
 }
 
-.item-format {
-  height: 400px;
-  font-size: medium;
+.header {
+  font-size: 72px;
+  padding: 0px;
+  margin: 0px;
 }

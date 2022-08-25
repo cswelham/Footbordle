@@ -23,6 +23,7 @@ interface AppProps {
 }
 
 function App(props?: AppProps) {
+
   // List of all footballers
   const playerList: Player[] = [
     {label: 'Lionel Messi', overall: 93, pace: 85, shooting: 92, passing: 91, dribbling: 95, defending: 34, physical: 60},
@@ -55,6 +56,7 @@ function App(props?: AppProps) {
   const [currentDefending, setCurrentDefending]  = useState<string>('');
   const [currentPhysical, setCurrentPhysical]  = useState<string>('');
 
+  // Holds height and width of screen
   const { height, width } = useWindowDimensions();
 
   const Item: any = styled(Paper)(({ theme }) => ({
@@ -62,8 +64,20 @@ function App(props?: AppProps) {
     ...theme.typography.body2,
     padding: theme.spacing(1),
     textAlign: 'center',
+    verticalAlign: 'center',
     color: theme.palette.text.secondary,
-    fontSize: 12,
+    fontSize: 14,
+    height: 40,
+  }));
+
+  const ItemBlue: any = styled(Paper)(({ theme }) => ({
+    backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : theme.palette.primary.main,
+    ...theme.typography.body2,
+    padding: theme.spacing(1),
+    textAlign: 'center',
+    verticalAlign: 'center',
+    color: 'white',
+    fontSize: 13,
     height: 40,
   }));
 
@@ -101,14 +115,14 @@ function App(props?: AppProps) {
     // Users selects correct player
     if (correctPlayer.label === currentPlayer!.label) {
       setFinished('W');
-      alert("You Win! You took " + (guessedPlayers.length + 1) + " guesses!");
+      setTimeout(() => { alert("You Win! You took " + (guessedPlayers.length + 1) + " guesses!") }, 500);
     }
     // User selects wrong
     else {
       // If out of guesses
       if (guessedPlayers.length === 4) {
         setFinished('L');
-        alert('You Lose! The player was ' + correctPlayer.label);
+        setTimeout(() => { alert('You Lose! The player was ' + correctPlayer.label) }, 500);
       }
     }
   }
@@ -144,9 +158,9 @@ function App(props?: AppProps) {
   }
 
   return (
-    <div style={{height: height-1, width: width, backgroundColor: '#282c34', overflow: 'hidden'}}>
+    <div style={{height: height-1, width: width, overflow: 'hidden'}}>
       <header className="App-header" style={{height: height * 0.25, width: width}}>
-        <h2>Footbordle</h2>
+        <h1 className="header">Footbordle</h1>
         <p>Wordle but for FIFA 22 players! Try to guess the FIFA footballer in 5 guesses to win!</p>
       </header>
 
@@ -155,35 +169,35 @@ function App(props?: AppProps) {
         <div className="one" style={{height: height * 0.65, width: width/2 - 20, textAlign: 'center'}}>
           <h2>Past Guesses</h2>
           <Box sx={{ flexGrow: 1 }}>
-            <Grid container spacing={1}>
+            <Grid container spacing={0.5}>
               <Grid item xs={3}>
-                <Item><b>Name</b></Item>
+                <ItemBlue><b>Name</b></ItemBlue>
               </Grid>
               <Grid item xs={9/7}>
-                <Item><b>Overall</b></Item>
+                <ItemBlue><b>Overall</b></ItemBlue>
               </Grid>
               <Grid item xs={9/7}>
-                <Item><b>Pace</b></Item>
+                <ItemBlue><b>Pace</b></ItemBlue>
               </Grid>
               <Grid item xs={9/7}>
-                <Item><b>Shooting</b></Item>
+                <ItemBlue><b>Shooting</b></ItemBlue>
               </Grid>
               <Grid item xs={9/7}>
-                <Item><b>Passing</b></Item>
+                <ItemBlue><b>Passing</b></ItemBlue>
               </Grid>
               <Grid item xs={9/7}>
-                <Item><b>Dribbling</b></Item>
+                <ItemBlue><b>Dribbling</b></ItemBlue>
               </Grid>
               <Grid item xs={9/7}>
-                <Item><b>Defending</b></Item>
+                <ItemBlue><b>Defending</b></ItemBlue>
               </Grid>
               <Grid item xs={9/7}>
-                <Item><b>Physical</b></Item>
+                <ItemBlue><b>Physical</b></ItemBlue>
               </Grid>
             </Grid>
             {guessedPlayers[0] === undefined 
               ? <>
-                <Grid container spacing={1} style={{paddingTop: 10}}>
+                <Grid container spacing={0.5} style={{paddingTop: 10}}>
                   <Grid item xs={3}>
                     <Item><b></b></Item>
                   </Grid>
@@ -211,7 +225,7 @@ function App(props?: AppProps) {
                 </Grid>
               </>
               : <>
-                <Grid container spacing={1} style={{paddingTop: 10}}>
+                <Grid container spacing={0.5} style={{paddingTop: 10}}>
                   <Grid item xs={3}>
                     <Item>{guessedPlayers[0].label}</Item>
                   </Grid>
@@ -241,7 +255,7 @@ function App(props?: AppProps) {
             }
             {guessedPlayers[1] === undefined 
               ? <>
-                <Grid container spacing={1} style={{paddingTop: 10}}>
+                <Grid container spacing={0.5} style={{paddingTop: 10}}>
                   <Grid item xs={3}>
                     <Item><b></b></Item>
                   </Grid>
@@ -269,7 +283,7 @@ function App(props?: AppProps) {
                 </Grid>
               </>
               : <>
-                <Grid container spacing={1} style={{paddingTop: 10}}>
+                <Grid container spacing={0.5} style={{paddingTop: 10}}>
                   <Grid item xs={3}>
                     <Item>{guessedPlayers[1].label}</Item>
                   </Grid>
@@ -299,7 +313,7 @@ function App(props?: AppProps) {
             }
             {guessedPlayers[2] === undefined 
               ? <>
-                <Grid container spacing={1} style={{paddingTop: 10}}>
+                <Grid container spacing={0.5} style={{paddingTop: 10}}>
                   <Grid item xs={3}>
                     <Item><b></b></Item>
                   </Grid>
@@ -327,7 +341,7 @@ function App(props?: AppProps) {
                 </Grid>
               </>
               : <>
-                <Grid container spacing={1} style={{paddingTop: 10}}>
+                <Grid container spacing={0.5} style={{paddingTop: 10}}>
                   <Grid item xs={3}>
                     <Item>{guessedPlayers[2].label}</Item>
                   </Grid>
@@ -357,7 +371,7 @@ function App(props?: AppProps) {
             }
             {guessedPlayers[3] === undefined 
               ? <>
-                <Grid container spacing={1} style={{paddingTop: 10}}>
+                <Grid container spacing={0.5} style={{paddingTop: 10}}>
                   <Grid item xs={3}>
                     <Item><b></b></Item>
                   </Grid>
@@ -385,7 +399,7 @@ function App(props?: AppProps) {
                 </Grid>
               </>
               : <>
-                <Grid container spacing={1} style={{paddingTop: 10}}>
+                <Grid container spacing={0.5} style={{paddingTop: 10}}>
                   <Grid item xs={3}>
                     <Item>{guessedPlayers[3].label}</Item>
                   </Grid> 
@@ -415,7 +429,7 @@ function App(props?: AppProps) {
             }
             {guessedPlayers[4] === undefined 
               ? <>
-                <Grid container spacing={1} style={{paddingTop: 10}}>
+                <Grid container spacing={0.5} style={{paddingTop: 10}}>
                   <Grid item xs={3}>
                     <Item><b></b></Item>
                   </Grid>
@@ -443,7 +457,7 @@ function App(props?: AppProps) {
                 </Grid>
               </>
               : <>
-                <Grid container spacing={1} style={{paddingTop: 10}}>
+                <Grid container spacing={0.5} style={{paddingTop: 10}}>
                   <Grid item xs={3}>
                     <Item>{guessedPlayers[4].label}</Item>
                   </Grid>
@@ -472,36 +486,98 @@ function App(props?: AppProps) {
               </>
             }
           </Box>
+
+          <h2>Correct Player</h2>
+          <Box sx={{ flexGrow: 1 }}>
+          {finished === "" 
+              ? <>
+                <Grid container spacing={0.5} style={{paddingTop: 10}}>
+                  <Grid item xs={3}>
+                    <Item><b></b></Item>
+                  </Grid>
+                  <Grid item xs={9/7}>
+                    <Item><b></b></Item>
+                  </Grid>
+                  <Grid item xs={9/7}>
+                    <Item><b></b></Item>
+                  </Grid>
+                  <Grid item xs={9/7}>
+                    <Item><b></b></Item>
+                  </Grid>
+                  <Grid item xs={9/7}>
+                    <Item><b></b></Item>
+                  </Grid>
+                  <Grid item xs={9/7}>
+                    <Item><b></b></Item>
+                  </Grid>
+                  <Grid item xs={9/7}>
+                    <Item><b></b></Item>
+                  </Grid>
+                  <Grid item xs={9/7}>
+                    <Item><b></b></Item>
+                  </Grid>
+                </Grid>
+              </>
+              : <>
+                <Grid container spacing={0.5} style={{paddingTop: 10}}>
+                  <Grid item xs={3}>
+                    <Item style={{backgroundColor: "yellow"}}>{correctPlayer.label}</Item>
+                  </Grid>
+                  <Grid item xs={9/7}>
+                    <Item style={{backgroundColor: "yellow"}}>{correctPlayer.overall}</Item>
+                  </Grid>
+                  <Grid item xs={9/7}>
+                    <Item style={{backgroundColor: "yellow"}}>{correctPlayer.pace}</Item>
+                  </Grid>
+                  <Grid item xs={9/7}>
+                    <Item style={{backgroundColor: "yellow"}}>{correctPlayer.shooting}</Item>
+                  </Grid>
+                  <Grid item xs={9/7}>
+                    <Item style={{backgroundColor: "yellow"}}>{correctPlayer.passing}</Item>
+                  </Grid>
+                  <Grid item xs={9/7}>
+                    <Item style={{backgroundColor: "yellow"}}>{correctPlayer.dribbling}</Item>
+                  </Grid>
+                  <Grid item xs={9/7}>
+                    <Item style={{backgroundColor: "yellow"}}>{correctPlayer.defending}</Item>
+                  </Grid>
+                  <Grid item xs={9/7}>
+                    <Item style={{backgroundColor: "yellow"}}>{correctPlayer.physical}</Item>
+                  </Grid>
+                </Grid>
+              </>
+            }
+          </Box>
         </div>
 
         <div className="two" style={{height: height * 0.65, width: width/2, textAlign: 'center'}}>
           <h2 className='h2-pad'>Current Guess</h2>
 
-          <Grid container spacing={1}>
+          <Grid container spacing={0.5}>
               <Grid item xs={12/7}>
-                <Item className="item-format"><b>Overall</b></Item>
+                <ItemBlue><b>Overall</b></ItemBlue>
               </Grid>
               <Grid item xs={12/7}>
-                <Item><b>Pace</b></Item>
+                <ItemBlue><b>Pace</b></ItemBlue>
               </Grid>
               <Grid item xs={12/7}>
-                <Item><b>Shooting</b></Item>
+                <ItemBlue><b>Shooting</b></ItemBlue>
               </Grid>
               <Grid item xs={12/7}>
-                <Item><b>Passing</b></Item>
+                <ItemBlue><b>Passing</b></ItemBlue>
               </Grid>
               <Grid item xs={12/7}>
-                <Item><b>Dribbling</b></Item>
+                <ItemBlue><b>Dribbling</b></ItemBlue>
               </Grid>
               <Grid item xs={12/7}>
-                <Item><b>Defending</b></Item>
+                <ItemBlue><b>Defending</b></ItemBlue>
               </Grid>
               <Grid item xs={12/7}>
-                <Item><b>Physical</b></Item>
+                <ItemBlue><b>Physical</b></ItemBlue>
               </Grid>
             </Grid>
 
-          <Grid container spacing={1} style={{paddingTop: 10}}>
+          <Grid container spacing={0.5} style={{paddingTop: 10}}>
               <Grid item xs={12/7}>
                 <Item>{currentOverall}</Item>
               </Grid>
@@ -529,12 +605,39 @@ function App(props?: AppProps) {
             <Autocomplete
               disablePortal
               options={playerList}
-              sx={{width: (width * 2/5), maxHeight:height*0.4, backgroundColor: 'white', textAlign: 'center'}}
+              sx={{width: (width / 2), maxHeight:height*0.4, textAlign: 'center'}}
               getOptionLabel={(option) => option.label}
               onChange={(event: any, newValue: Player | null) => autocompleteChange(newValue)}
               renderOption={(props, option) => (
                 <Box component="li" sx={{ '& > img': { mr: 2, flexShrink: 0 } }} {...props}>
-                  <b>{option.label}</b> - {option.overall} (PAC:{option.pace} SHO:{option.shooting} PAS:{option.passing} DRI:{option.dribbling} DEF:{option.defending} PHY:{option.physical})
+                  
+                  <Grid container style={{paddingTop: 10}}>
+                    <Grid item xs={3}>
+                      <Item><b>{option.label}</b></Item>
+                    </Grid>
+                    <Grid item xs={9/7}>
+                      <Item><b>{option.overall}</b></Item>
+                    </Grid>
+                    <Grid item xs={9/7}>
+                      <Item>PAC:{option.pace}</Item>
+                    </Grid>
+                    <Grid item xs={9/7}>
+                      <Item>SHO:{option.shooting}</Item>
+                    </Grid>
+                    <Grid item xs={9/7}>
+                      <Item>PAS:{option.passing}</Item>
+                    </Grid>
+                    <Grid item xs={9/7}>
+                      <Item>DRI:{option.dribbling}</Item>
+                    </Grid>
+                    <Grid item xs={9/7}>
+                      <Item>DEF:{option.defending}</Item>
+                    </Grid>
+                    <Grid item xs={9/7}>
+                      <Item>PHY:{option.physical}</Item>
+                    </Grid>
+                  </Grid>
+
                 </Box>
               )}
               renderInput={(params) => (
@@ -549,7 +652,7 @@ function App(props?: AppProps) {
             />
           </div>
 
-          <Button variant="contained" className="button-guess" style={{backgroundColor: 'silver', color: 'black'}} onClick={onGuess} disabled={currentPlayer === undefined || finished !== ''}>
+          <Button variant="contained" className="button-guess" onClick={onGuess} disabled={currentPlayer === undefined || finished !== ''}>
             <b>Guess</b>
           </Button>
           
@@ -558,17 +661,19 @@ function App(props?: AppProps) {
       </section>
 
       <div style={{height: height * 0.1-1, width: width, textAlign: 'center'}}>
-        <Button variant="contained" className='button-restart' style={{backgroundColor: 'silver', color: 'black'}} onClick={() => 
+        <Button variant="contained" className='button-restart' onClick={() => 
             alert("Instructions.\n" +
             "Type in the input box to choose from a list of FIFA players.\nOnce you have selected your player, press the guess button.\n" + 
             "On the left hand side, it will show if the player stats are higher or lower.\nGreen means higher.\nRed means lower.\n" + 
             "Yellow means correct.\nTry and guess the player in 5 attempts to win!")}>
           <b>Instructions</b>
         </Button>
-        <Button variant="contained" className='button-restart' style={{backgroundColor: 'silver', color: 'black'}} onClick={onRestart}>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <Button variant="contained" className='button-restart' onClick={onRestart}>
           <b>Restart</b>
         </Button>
-        <Button variant="contained" className='button-restart' style={{backgroundColor: 'silver', color: 'black'}} onClick={props?.signOut}>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <Button variant="contained" className='button-restart' onClick={props?.signOut}>
           <b>Sign Out</b>
         </Button>
       </div>
