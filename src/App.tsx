@@ -1,5 +1,6 @@
 import { Autocomplete, Box, Button, Grid, Paper, styled, TextField } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material';
+import React, { useEffect, useMemo, useState } from 'react';
 import './App.css';
 import useWindowDimensions from './Tools/Window';
 import "@aws-amplify/ui-react/styles.css";
@@ -17,6 +18,12 @@ interface Player {
   physical: number
 }
 
+// Interface for a user
+interface User {
+  username: string,
+  score: number,
+}
+
 // Interface for AppProps
 interface AppProps {
   signOut?: any,
@@ -28,6 +35,16 @@ function App(props?: AppProps) {
   const [apiArray, setApiArray] = useState<any>();
   // Holds list of all players
   const [playerList, setPlayerList] = useState<Player[]>([]);
+  // Holds list of all users
+  const [userList, setUserList] = useState<User[]>([
+    {username: "Robert", score: 5},
+    {username: "James", score: 7},
+    {username: "Kerry", score: 12},
+    {username: "Lauren", score: 2},
+    {username: "Bruce", score: 4},
+    {username: "Kyle", score: 11},
+    {username: "Jake", score: 9},
+  ]);
 
   /*
   // List of all footballers
@@ -62,6 +79,21 @@ function App(props?: AppProps) {
   const [currentDribbling, setCurrentDribbling]  = useState<string>('');
   const [currentDefending, setCurrentDefending]  = useState<string>('');
   const [currentPhysical, setCurrentPhysical]  = useState<string>('');
+
+  // Holds dialog property for instructions
+  const [instructionsOpen, setInstructionsOpen] = useState<boolean>(false);
+  // Holds dialog property for win
+  const [winOpen, setWinOpen] = useState<boolean>(false);
+  // Holds dialog property for lose
+  const [loseOpen, setLoseOpen] = useState<boolean>(false);
+  // Holds dialog property for leaderboard
+  const [leaderboardOpen, setLeaderboardOpen] = useState<boolean>(false);
+  // Holds username for leaderboard
+  const [username, setUsername] = useState<string>("");
+  // Holds if username has been entered
+  const [usernameEntered, setUsernameEntered] = useState<boolean>(false);
+  // Holds current user if they are in the database
+  const [currentUser, setCurrentUser] = useState<User>({username: "hi", score: 0});
 
   // Holds height and width of screen
   const { height, width } = useWindowDimensions();
@@ -99,6 +131,11 @@ function App(props?: AppProps) {
 
   // Setup the players array by calling the api
   useEffect(() => {
+    // Update user list
+    var newUserList: User[] = [...userList];
+    newUserList = newUserList.sort((user1, user2) => user2.score - user1.score);
+    setUserList(newUserList);
+
     apiCall();
     // Create the list of players from api array
     var newPlayerList: Player[] = []
@@ -152,14 +189,14 @@ function App(props?: AppProps) {
     // Users selects correct player
     if (correctPlayer.label === currentPlayer!.label) {
       setFinished('W');
-      setTimeout(() => { alert("You Win! You took " + (guessedPlayers.length + 1) + " guesses!") }, 500);
+      setTimeout(() => setWinOpen(true), 500);
     }
     // User selects wrong
     else {
       // If out of guesses
       if (guessedPlayers.length === 4) {
         setFinished('L');
-        setTimeout(() => { alert('You Lose! The player was ' + correctPlayer.label) }, 500);
+        setTimeout(() => setLoseOpen(true), 500);
       }
     }
   }
@@ -193,6 +230,48 @@ function App(props?: AppProps) {
       return "yellow";
     }
   }
+
+  // Update leaderboard array
+  function onLeaderboardUpdate() {
+    setUsernameEntered(true);
+    setWinOpen(false);
+    // Find if the user is in the database
+    const current: number = userList.findIndex((user: User) => user.username === username);
+    // If user found
+    if (current > -1) {
+      const newUserList: User[] = [...userList];
+      newUserList[current].score = newUserList[current].score + 1;
+      setUserList(newUserList);
+      setCurrentUser({ username: newUserList[current].username, score: newUserList[current].score });
+    }
+    // Else add to the array
+    else {
+      setUserList([...userList, {username: username, score: 1}]);
+      setCurrentUser({ username: username, score: 1 });
+    }
+  }
+
+  // Renders the leaderboard scores
+  const leaderboard = useMemo(() => userList.map(
+    (user: User, index: number) => {
+      if (index < 5) {
+        return( 
+          <>
+            <Grid item xs={9}>
+              <Item>{user.username}</Item>
+            </Grid>
+            <Grid item xs={3}>
+              <Item>{user.score}</Item>
+            </Grid>
+          </>
+        );
+      }
+      else {
+        return null;
+      }
+    }
+    // eslint-disable-next-line
+  ), [userList]);
 
   return (
     <div style={{height: height-1, width: width, overflow: 'hidden'}}>
@@ -621,7 +700,6 @@ function App(props?: AppProps) {
               onChange={(event: any, newValue: Player | null) => autocompleteChange(newValue)}
               renderOption={(props, option) => (
                 <Box component="li" sx={{ '& > img': { mr: 2, flexShrink: 0 } }} {...props}>
-                  
                   <Grid container style={{paddingTop: 10}}>
                     <Grid item xs={3}>
                       <Item><b>{option.label}</b></Item>
@@ -648,7 +726,6 @@ function App(props?: AppProps) {
                       <Item>PHY:{option.physical}</Item>
                     </Grid>
                   </Grid>
-
                 </Box>
               )}
               renderInput={(params) => (
@@ -672,12 +749,12 @@ function App(props?: AppProps) {
       </section>
 
       <div style={{height: height * 0.1-1, width: width, textAlign: 'center'}}>
-        <Button variant="contained" className='button-restart' onClick={() => 
-            alert("Instructions.\n" +
-            "Type in the input box to choose from a list of FIFA players.\nOnce you have selected your player, press the guess button.\n" + 
-            "On the left hand side, it will show if the player stats are higher or lower.\nGreen means higher.\nRed means lower.\n" + 
-            "Yellow means correct.\nTry and guess the player in 5 attempts to win!")}>
+        <Button variant="contained" className='button-restart' onClick={() => setInstructionsOpen(true)}>
           <b>Instructions</b>
+        </Button>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <Button variant="contained" className='button-restart' onClick={() => setLeaderboardOpen(true)}>
+          <b>Leaderboard</b>
         </Button>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         <Button variant="contained" className='button-restart' onClick={onRestart}>
@@ -688,6 +765,104 @@ function App(props?: AppProps) {
           <b>Sign Out</b>
         </Button>
       </div>
+
+      <Dialog open={instructionsOpen} onClose={() => setInstructionsOpen(false)}>
+        <DialogTitle>Instructions</DialogTitle>
+        <DialogContent>
+          <DialogContentText> Type in the input box to choose from a list of FIFA players. </DialogContentText>
+          <DialogContentText> Once you have selected your player, press the guess button. </DialogContentText>
+          <DialogContentText> On the left hand side, it will show if the player stats are higher or lower. </DialogContentText>
+          <DialogContentText> Green means higher. </DialogContentText>
+          <DialogContentText> Red means lower. </DialogContentText>
+          <DialogContentText> Yellow means correct. </DialogContentText>
+          <DialogContentText> Try and guess the player in 5 attempts to win! </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setInstructionsOpen(false)}>Close</Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={winOpen}>
+        <DialogTitle>You Win!</DialogTitle>
+        {!usernameEntered
+          ? <>
+              <DialogContent>
+                {guessedPlayers !== undefined 
+                  ? <DialogContentText> You took {guessedPlayers.length} guesses! </DialogContentText>
+                  : null
+                }
+                <TextField autoFocus margin="dense" id="name" label="Username" type="email" fullWidth variant="standard" 
+                  defaultValue={username} onChange={(event: any) => setUsername(event.target.value)}/>
+              </DialogContent>
+              <DialogActions>
+                <Button disabled={username === ""} onClick={onLeaderboardUpdate}>Ok</Button>
+              </DialogActions>
+            </>
+            : <>
+                <DialogContent>
+                  {guessedPlayers !== undefined 
+                    ? <DialogContentText> You took {guessedPlayers.length} guesses! </DialogContentText>
+                    : null
+                  }
+                </DialogContent>
+                <DialogActions>
+                  <Button onClick={onLeaderboardUpdate}>Close</Button>
+                </DialogActions>
+              </>
+        }
+      </Dialog>
+
+      <Dialog open={loseOpen} onClose={() => setLoseOpen(false)}>
+        <DialogTitle>You Lose!</DialogTitle>
+        <DialogContent>
+          {correctPlayer !== undefined
+            ? <DialogContentText> The player was {correctPlayer.label}. </DialogContentText> 
+            : null
+          }
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setLoseOpen(false)}>Close</Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={leaderboardOpen}>
+        <DialogTitle>Leaderboard</DialogTitle>
+        <DialogContent>
+          <DialogContentText>Top 5</DialogContentText>
+          <Box sx={{ flexGrow: 1 }}>
+            <Grid container spacing={0.5} style={{paddingTop: 10}}>
+              <Grid item xs={9}>
+                <ItemBlue>Username</ItemBlue>
+              </Grid>
+              <Grid item xs={3}>
+                <ItemBlue>Score</ItemBlue>
+              </Grid> 
+              {leaderboard}
+            </Grid>
+          </Box>
+        {username !== ""
+          ? <>
+              <DialogContentText>--</DialogContentText>
+              <DialogContentText>Your Score</DialogContentText>
+              <Box sx={{ flexGrow: 1 }}>
+                <Grid container spacing={0.5} style={{paddingTop: 10}}>
+                  <Grid item xs={9}>
+                    <Item>{currentUser.username}</Item>
+                  </Grid>
+                  <Grid item xs={3}>
+                    <Item>{currentUser.score}</Item>
+                  </Grid> 
+                </Grid>
+              </Box>
+            </>
+          : null
+        }
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setLeaderboardOpen(false)}>Close</Button>
+        </DialogActions>
+      </Dialog>
+
     </div>
   );
 }
