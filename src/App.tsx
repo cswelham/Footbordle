@@ -46,9 +46,9 @@ function App(props?: AppProps) {
     {username: "Jake", score: 9},
   ]);
 
-  /*
+  
   // List of all footballers
-  const playerList2: Player[] = [
+  const playerListManual: Player[] = [
     {label: 'Lionel Messi', overall: 93, pace: 85, shooting: 92, passing: 91, dribbling: 95, defending: 34, physical: 60},
     {label: 'Robert Lewandowski', overall: 92, pace: 78, shooting: 92, passing: 79, dribbling: 86, defending: 44, physical: 82},
     {label: 'Cristiano Ronaldo', overall: 91, pace: 87, shooting: 94, passing: 80, dribbling: 88, defending: 34, physical: 75},
@@ -60,7 +60,7 @@ function App(props?: AppProps) {
     {label: 'Karim Benzema', overall: 89, pace: 76, shooting: 86, passing: 81, dribbling: 87, defending: 39, physical: 77},
     {label: 'Heung Min Son', overall: 89, pace: 88, shooting: 87, passing: 82, dribbling: 86, defending: 43, physical: 69},
   ];
-  */
+  
 
   // Holds player to guess
   const [correctPlayer, setCorrectPlayer] = useState<Player>(playerList[Math.floor(Math.random()*playerList.length)]);
@@ -135,23 +135,30 @@ function App(props?: AppProps) {
     var newUserList: User[] = [...userList];
     newUserList = newUserList.sort((user1, user2) => user2.score - user1.score);
     setUserList(newUserList);
-
-    apiCall();
-    // Create the list of players from api array
-    var newPlayerList: Player[] = []
-    if (apiArray !== undefined) {
-      const newApiArray = apiArray.filter((x: any) => x.positions !== 'GK');
-      newPlayerList = newApiArray.map((p: any) => {
-        return (
-          {label: p.name, overall: p.overall, pace: p.pace, shooting: p.shooting, passing: p.passing, 
-            dribbling: p.dribbling, defending: p.defending, physical: p.physical }
-        )
-      });
+    try {
+      apiCall();
+      // Create the list of players from api array
+      var newPlayerList: Player[] = []
+      if (apiArray !== undefined) {
+        const newApiArray = apiArray.filter((x: any) => x.positions !== 'GK');
+        newPlayerList = newApiArray.map((p: any) => {
+          return (
+            {label: p.name, overall: p.overall, pace: p.pace, shooting: p.shooting, passing: p.passing, 
+              dribbling: p.dribbling, defending: p.defending, physical: p.physical }
+          )
+        });
+        // Set player list
+        setPlayerList(newPlayerList);
+        // Set the correct player
+        setCorrectPlayer((playerList[Math.floor(Math.random()*playerList.length)]));
+      };
+    }
+    catch (e) {
       // Set player list
-      setPlayerList(newPlayerList);
+      setPlayerList(playerListManual);
       // Set the correct player
-      setCorrectPlayer((playerList[Math.floor(Math.random()*playerList.length)]));
-    };
+      setCorrectPlayer((playerListManual[Math.floor(Math.random()*playerList.length)]));
+    }
     // eslint-disable-next-line
   }, [apiArray])
 
