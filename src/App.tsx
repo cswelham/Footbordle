@@ -5,6 +5,10 @@ import './App.css';
 import useWindowDimensions from './Tools/Window';
 import "@aws-amplify/ui-react/styles.css";
 import { withAuthenticator } from "@aws-amplify/ui-react";
+import { Auth, API } from 'aws-amplify';
+import { listUsers } from './graphql/queries';
+import { createUser as createUserMutation, updateUser as updateUserMutation } from './graphql/mutations';
+import { GraphQLResult } from '@aws-amplify/api';
 
 // Interface for a player
 interface Player {
@@ -20,6 +24,7 @@ interface Player {
 
 // Interface for a user
 interface User {
+  id?: string,
   username: string,
   score: number,
 }
@@ -36,15 +41,7 @@ function App(props?: AppProps) {
   // Holds list of all players
   const [playerList, setPlayerList] = useState<Player[]>([]);
   // Holds list of all users
-  const [userList, setUserList] = useState<User[]>([
-    {username: "Robert", score: 5},
-    {username: "James", score: 7},
-    {username: "Kerry", score: 12},
-    {username: "Lauren", score: 2},
-    {username: "Bruce", score: 4},
-    {username: "Kyle", score: 11},
-    {username: "Jake", score: 9},
-  ]);
+  const [userList, setUserList] = useState<User[]>([]);
   
   // List of all footballers
   const playerListManual: Player[] = [
@@ -92,12 +89,8 @@ function App(props?: AppProps) {
   const [loseOpen, setLoseOpen] = useState<boolean>(false);
   // Holds dialog property for leaderboard
   const [leaderboardOpen, setLeaderboardOpen] = useState<boolean>(false);
-  // Holds username for leaderboard
-  const [username, setUsername] = useState<string>("");
-  // Holds if username has been entered
-  const [usernameEntered, setUsernameEntered] = useState<boolean>(false);
   // Holds current user if they are in the database
-  const [currentUser, setCurrentUser] = useState<User>({username: "hi", score: 0});
+  const [currentUser, setCurrentUser] = useState<User>({id: "", username: "", score: 0});
 
   // Holds height and width of screen
   const { height, width } = useWindowDimensions();
@@ -132,17 +125,27 @@ function App(props?: AppProps) {
       if (apiArray === undefined) {
         setApiArray(json);
       }
+      // Retrieve the user's username
+      Auth.currentAuthenticatedUser().then((user) => {
+        const currentUsername: string = user.username.charAt(0).toUpperCase() + user.username.slice(1);
+        setCurrentUser({ id: currentUser.username, username: currentUsername , score: 0});
+      });
     }
     catch (e) {
       console.log(e);
     }
   }
 
+  // Renders the fetch users on first render
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
   // Setup the players array by calling the api
   useEffect(() => {
     // Update user list
     var newUserList: User[] = [...userList];
-    newUserList = newUserList.sort((user1, user2) => user2.score - user1.score);
+    newUserList = orderUserArray(newUserList);
     setUserList(newUserList);
     try {
       apiCall();
@@ -172,6 +175,73 @@ function App(props?: AppProps) {
     // eslint-disable-next-line
   }, [apiArray])
 
+  // Fetch all the users
+  async function fetchUsers() {
+    try {
+      const apiData = await API.graphql({ query: listUsers }) as GraphQLResult<any>;
+      // For loop to get usernames and scores
+      const database: User[] = apiData.data.listUsers.items;
+      var newDatabase: User[] = [];
+      for (let i = 0; i < database.length; i++) {
+        newDatabase[i] = { id: database[i].id, username: database[i].username, score: database[i].score };
+      }
+      
+      setUserList(newDatabase);
+      console.log("Database");
+      console.log(newDatabase);
+    }
+    catch (e) {
+      // Data storage doesn't work so use manual list
+       setUserList([
+        {id: "1", username: "Robert", score: 5},
+        {id: "2", username: "James", score: 7},
+        {id: "3", username: "Kerry", score: 12},
+        {id: "4", username: "Lauren", score: 2},
+        {id: "5", username: "Bruce", score: 4},
+        {id: "6", username: "Kyle", score: 11},
+        {id: "7", username: "Jake", score: 9},
+      ]);       
+    }
+  }
+
+  // Create a new user
+  async function createUser() {
+    await API.graphql({ query: createUserMutation, variables: { input: {username: currentUser.username, score: 1} } });
+    const newUserList: User[] = [ ...userList, {username: currentUser.username, score: 1} ];
+    setUserList(orderUserArray(newUserList));
+    setCurrentUser({ id: currentUser.username, username: currentUser.username, score: 1 });
+  }
+
+  // Update a user
+  async function updateUser() {
+    // Find if the user is in the database
+    const current: number = userList.findIndex((user: User) => user.username === currentUser.username);
+    // If user found
+    if (current > -1) {
+      // Add one to score
+      var newUserList: User[] = [...userList];
+      newUserList[current].score = Number(newUserList[current].score) + 1;
+      await API.graphql({ query: updateUserMutation, variables: { input: {id: newUserList[current].id, username: currentUser.username, score: (Number(newUserList[current].score) + 1)} } });
+      newUserList = orderUserArray(newUserList);
+      setUserList(newUserList);
+      setCurrentUser({ id: newUserList[current].id, username: currentUser.username, score: (Number(currentUser.score) + 1) });
+    }
+  }
+
+  /*
+  // Delete a user
+  async function deleteUser(id: string) {
+    const newUserList = userList.filter((user: User) => user.id !== id);
+    setUserList(newUserList);
+    await API.graphql({ query: deleteUserMutation, variables: { input: { id } }});
+  }
+  */
+
+  // Orders an array of user's by score from highest to lowest
+  function orderUserArray(array: User[]) {
+    return array.sort((user1: User, user2: User) => user2.score - user1.score);
+  }
+  
   // On autocomplete change
   function autocompleteChange(value: Player | null) {
     // If null set all consts to null
@@ -258,32 +328,34 @@ function App(props?: AppProps) {
 
   // Update leaderboard array
   function onLeaderboardUpdate() {
-    setUsernameEntered(true);
     setWinOpen(false);
     // Find if the user is in the database
-    const current: number = userList.findIndex((user: User) => user.username === username);
+    const current: number = userList.findIndex((user: User) => user.username === currentUser.username);
     // If user found
     if (current > -1) {
-      // Add one to score
-      var newUserList: User[] = [...userList];
-      newUserList[current].score = newUserList[current].score + 1;
-      // Reorder list
-      newUserList = newUserList.sort((user1, user2) => user2.score - user1.score);
-      setUserList(newUserList);
-      setCurrentUser({ username: newUserList[current].username, score: newUserList[current].score });
+      updateUser();
     }
     // Else add to the array
     else {
-      setUserList([...userList, {username: username, score: 1}]);
-      setCurrentUser({ username: username, score: 1 });
+      createUser();
     }
+  }
+
+  // When leaderboard dialog is opened
+  function onLeaderboardClick() {
+    // Find if the user is in the database
+    const index: number = userList.findIndex((user: User) => user.username === currentUser.username);
+    if (index > -1) {
+      setCurrentUser({ id: userList[index].id, username: currentUser.username, score: userList[index].score });
+    }
+    setLeaderboardOpen(true);
   }
 
   // Renders the leaderboard scores
   const leaderboard = useMemo(() => userList.map(
     (user: User, index: number) => {
       if (index < 5) {
-        if (user.username === username) {
+        if (user.username === currentUser.username) {
           return ( 
             <>
               <Grid item xs={9}>
@@ -314,7 +386,7 @@ function App(props?: AppProps) {
       }
     }
     // eslint-disable-next-line
-  ), [userList]);
+  ), [userList, currentUser]);
 
   // Renders the guessed players
   const guesses = useMemo(() => guessedPlayers.map(
@@ -557,7 +629,7 @@ function App(props?: AppProps) {
           <b>Instructions</b>
         </Button>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <Button variant="contained" className='button-restart' onClick={() => setLeaderboardOpen(true)}>
+        <Button variant="contained" className='button-restart' onClick={onLeaderboardClick}>
           <b>Leaderboard</b>
         </Button>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -588,32 +660,15 @@ function App(props?: AppProps) {
 
       <Dialog open={winOpen}>
         <DialogTitle>You Win!</DialogTitle>
-        {!usernameEntered
-          ? <>
-              <DialogContent>
-                {guessedPlayers !== undefined 
-                  ? <DialogContentText> You took {guessedPlayers.length} guesses! </DialogContentText>
-                  : null
-                }
-                <TextField autoFocus margin="dense" id="name" label="Username" type="email" fullWidth variant="standard" 
-                  defaultValue={username} onChange={(event: any) => setUsername(event.target.value)}/>
-              </DialogContent>
-              <DialogActions>
-                <Button disabled={username === ""} onClick={onLeaderboardUpdate}>Ok</Button>
-              </DialogActions>
-            </>
-            : <>
-                <DialogContent>
-                  {guessedPlayers !== undefined 
-                    ? <DialogContentText> You took {guessedPlayers.length} guesses! </DialogContentText>
-                    : null
-                  }
-                </DialogContent>
-                <DialogActions>
-                  <Button onClick={onLeaderboardUpdate}>Close</Button>
-                </DialogActions>
-              </>
-        }
+        <DialogContent>
+          {guessedPlayers !== undefined 
+            ? <DialogContentText> You took {guessedPlayers.findIndex((p: Player) => p.label === "Placeholder")} guesses! </DialogContentText>
+            : null
+          }
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={onLeaderboardUpdate}>Close</Button>
+        </DialogActions>
       </Dialog>
 
       <Dialog open={loseOpen} onClose={() => setLoseOpen(false)}>
@@ -629,7 +684,7 @@ function App(props?: AppProps) {
         </DialogActions>
       </Dialog>
 
-      <Dialog open={leaderboardOpen}>
+      <Dialog open={leaderboardOpen} onClose={() => setLeaderboardOpen(false)}>
         <DialogTitle>Leaderboard</DialogTitle>
         <DialogContent>
           <DialogContentText><b>Top 5</b></DialogContentText>
@@ -644,7 +699,7 @@ function App(props?: AppProps) {
               {leaderboard}
             </Grid>
           </Box>
-        {username !== ""
+        {currentUser.username !== ""
           ? <>
               <DialogContentText>--</DialogContentText>
               <DialogContentText><b>Your Score</b></DialogContentText>
