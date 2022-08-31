@@ -127,6 +127,7 @@ function App(props?: AppProps) {
       const json = await query.json()
       if (apiArray === undefined) {
         setApiArray(json);
+        // Set autocomplete loading to false
         setAcLoading(false);
         console.log("Players:");
         console.log(json);
@@ -168,7 +169,7 @@ function App(props?: AppProps) {
         // Set player list
         setPlayerList(newPlayerList);
         // Set the correct player
-        setCorrectPlayer((playerList[Math.floor(Math.random()*playerList.length)]));
+        setCorrectPlayer((newPlayerList[Math.floor(Math.random()*newPlayerList.length)]));
       };
     }
     // Api not working
