@@ -92,6 +92,9 @@ function App(props?: AppProps) {
   // Holds current user if they are in the database
   const [currentUser, setCurrentUser] = useState<User>({id: "", username: "", score: 0});
 
+  // Holds if autocomplete is loading
+  const [acLoading, setAcLoading] = useState<boolean>(true);
+
   // Holds height and width of screen
   const { height, width } = useWindowDimensions();
 
@@ -124,6 +127,9 @@ function App(props?: AppProps) {
       const json = await query.json()
       if (apiArray === undefined) {
         setApiArray(json);
+        setAcLoading(false);
+        console.log("Players:");
+        console.log(json);
       }
       // Retrieve the user's username
       Auth.currentAuthenticatedUser().then((user) => {
@@ -187,7 +193,7 @@ function App(props?: AppProps) {
       }
       
       setUserList(newDatabase);
-      console.log("Database");
+      console.log("Users:");
       console.log(newDatabase);
     }
     catch (e) {
@@ -270,6 +276,8 @@ function App(props?: AppProps) {
 
   // User guesses player
   function onGuess() {
+    console.log("Correct Player");
+    console.log(correctPlayer);
     // Add to guessed players
     var newGuessedPlayers: Player[] = [...guessedPlayers];
     const index: number = newGuessedPlayers.findIndex((p: Player) => p.label === "Placeholder");
@@ -571,6 +579,7 @@ function App(props?: AppProps) {
             <Autocomplete
               disablePortal
               options={playerList}
+              loading={acLoading}
               sx={{width: (width / 2), maxHeight:height*0.4, textAlign: 'center'}}
               getOptionLabel={(option) => option.label}
               onChange={(event: any, newValue: Player | null) => autocompleteChange(newValue)}
