@@ -1,4 +1,4 @@
-import { Autocomplete, Box, Button, Grid, Paper, styled, TextField } from '@mui/material';
+import { Autocomplete, Box, Button, createFilterOptions, Grid, Paper, styled, TextField } from '@mui/material';
 import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material';
 import React, { useEffect, useMemo, useState } from 'react';
 import './App.css';
@@ -98,6 +98,12 @@ function App(props?: AppProps) {
 
   // Holds if autocomplete is loading
   const [acLoading, setAcLoading] = useState<boolean>(true);
+  // Limit the autocomplete options
+  const acFilterOptions = createFilterOptions({
+    limit: 20,
+    stringify: (option: Player) => option.label,
+  });
+  
 
   // Holds height and width of screen
   const { height, width } = useWindowDimensions();
@@ -129,7 +135,6 @@ function App(props?: AppProps) {
     try {
       // Get session token
       var token: any = await Auth.currentSession().then(session => session).catch(err => console.log(err));
-      console.log(token);
       // Call api
       const query = await fetch('https://r90ugk5s0f.execute-api.us-east-1.amazonaws.com/players', {
         method: 'GET',
@@ -351,9 +356,8 @@ function App(props?: AppProps) {
   async function onSubscribe() {
     // Get session token
     var token: any = await Auth.currentSession().then(session => session).catch(err => console.log(err));
-    console.log(token);
     // Call api
-    await fetch('https://r90ugk5s0f.execute-api.us-east-1.amazonaws.com/subscribe', {
+    await fetch('https://xxf6mxwcnc.execute-api.us-east-1.amazonaws.com/subscribe', {
       method: 'POST',
       body: currentEmail,
       headers: {
@@ -608,10 +612,11 @@ function App(props?: AppProps) {
               disablePortal
               options={playerList}
               loading={acLoading}
+              filterOptions={acFilterOptions}
               sx={{width: (width / 2), maxHeight:height*0.4, textAlign: 'center'}}
-              getOptionLabel={(option) => option.label}
+              getOptionLabel={(option: Player) => option.label}
               onChange={(event: any, newValue: Player | null) => autocompleteChange(newValue)}
-              renderOption={(props, option) => (
+              renderOption={(props, option: Player) => (
                 <Box component="li" sx={{ '& > img': { mr: 2, flexShrink: 0 } }} {...props}>
                   <Grid container style={{paddingTop: 10}}>
                     <Grid item xs={3}>
