@@ -35,11 +35,12 @@ interface AppProps {
 }
 
 function App(props?: AppProps) {
-
   // Holds array from api
   const [apiArray, setApiArray] = useState<any>();
   // Holds list of all players
   const [playerList, setPlayerList] = useState<Player[]>([]);
+  // Holds list of all possible players by overall
+  const [possibleList, setPossibleList] = useState<Player[]>([]);
   // Holds list of all users
   const [userList, setUserList] = useState<User[]>([]);
   
@@ -64,11 +65,12 @@ function App(props?: AppProps) {
 
   // Holds guessed players
   const [guessedPlayers, setGuessedPlayers] = useState<Player[]>([
-    {label: 'Placeholder', overall: 0, pace: 0, shooting: 0, passing: 0, dribbling: 0, defending: 0, physical: 0},
-    {label: 'Placeholder', overall: 0, pace: 0, shooting: 0, passing: 0, dribbling: 0, defending: 0, physical: 0},
-    {label: 'Placeholder', overall: 0, pace: 0, shooting: 0, passing: 0, dribbling: 0, defending: 0, physical: 0},
-    {label: 'Placeholder', overall: 0, pace: 0, shooting: 0, passing: 0, dribbling: 0, defending: 0, physical: 0},
-    {label: 'Placeholder', overall: 0, pace: 0, shooting: 0, passing: 0, dribbling: 0, defending: 0, physical: 0},
+    {label: 'Placeholder', overall: 99, pace: 0, shooting: 0, passing: 0, dribbling: 0, defending: 0, physical: 0},
+    {label: 'Placeholder', overall: 99, pace: 0, shooting: 0, passing: 0, dribbling: 0, defending: 0, physical: 0},
+    {label: 'Placeholder', overall: 99, pace: 0, shooting: 0, passing: 0, dribbling: 0, defending: 0, physical: 0},
+    {label: 'Placeholder', overall: 99, pace: 0, shooting: 0, passing: 0, dribbling: 0, defending: 0, physical: 0},
+    {label: 'Placeholder', overall: 99, pace: 0, shooting: 0, passing: 0, dribbling: 0, defending: 0, physical: 0},
+    {label: 'Placeholder', overall: 99, pace: 0, shooting: 0, passing: 0, dribbling: 0, defending: 0, physical: 0},
   ]);
 
   // Variables to store current selected stats
@@ -100,7 +102,7 @@ function App(props?: AppProps) {
   const [acLoading, setAcLoading] = useState<boolean>(true);
   // Limit the autocomplete options
   const acFilterOptions = createFilterOptions({
-    limit: 20,
+    limit: 50,
     stringify: (option: Player) => option.label,
   });
   
@@ -187,6 +189,7 @@ function App(props?: AppProps) {
         });
         // Set player list
         setPlayerList(newPlayerList);
+        setPossibleList(newPlayerList);
         // Set the correct player
         setCorrectPlayer((newPlayerList[Math.floor(Math.random()*newPlayerList.length)]));
       };
@@ -309,9 +312,40 @@ function App(props?: AppProps) {
     // User selects wrong
     else {
       // If out of guesses
-      if (index === 4) {
+      if (index === 5) {
         setFinished('L');
         setTimeout(() => setLoseOpen(true), 500);
+      }
+      else {
+        var low: number = 0;
+        var high: number = 99;
+        var correct: boolean = false;
+        for (let i = 0; i < newGuessedPlayers.length; i++) {
+          var overall: number = newGuessedPlayers[i].overall;
+          // If overall guessed correctly
+          if (overall === correctPlayer.overall) {
+            correct = true;
+            low = overall
+            break;
+          }
+          // Get lowest overall range
+          else if (overall < correctPlayer.overall) {
+            if (overall > low) 
+              low = overall;
+          }
+          // Get highest overall range
+          else {
+            if (overall < high)
+              high = overall;
+          }
+        }
+        // Filter the possible players by the range
+        var newPossibleList: Player[] = [...possibleList];
+        if (!correct)
+          newPossibleList = newPossibleList.filter((p: Player) => p.overall > low && p.overall < high);
+        else
+          newPossibleList = newPossibleList.filter((p: Player) => p.overall === low);
+        setPossibleList(newPossibleList);
       }
     }
   }
@@ -337,6 +371,7 @@ function App(props?: AppProps) {
     setCurrentDribbling('');
     setCurrentDefending('');
     setCurrentPhysical('');
+    setPossibleList([...playerList]);
   }
 
   // Determines colour of grid item
@@ -357,13 +392,15 @@ function App(props?: AppProps) {
     // Get session token
     var token: any = await Auth.currentSession().then(session => session).catch(err => console.log(err));
     // Call api
-    await fetch('https://xxf6mxwcnc.execute-api.us-east-1.amazonaws.com/subscribe', {
+    await fetch('https://r90ugk5s0f.execute-api.us-east-1.amazonaws.com/subscribe', {
       method: 'POST',
       body: currentEmail,
       headers: {
         Authorization: token.idToken.jwtToken,
       },
     });
+    // Close dialog
+    setSubscribeOpen(false);
   }
 
   // Update leaderboard array
@@ -389,6 +426,16 @@ function App(props?: AppProps) {
       setCurrentUser({ id: userList[index].id, username: currentUser.username, score: userList[index].score });
     }
     setLeaderboardOpen(true);
+  }
+
+  // Returns number of guesses after winning
+  function numberGuesses() {
+    if (guessedPlayers.findIndex((p: Player) => p.label === "Placeholder") === -1) {
+      return 6;
+    }
+    else {
+      return guessedPlayers.findIndex((p: Player) => p.label === "Placeholder");
+    }
   }
 
   // Renders the leaderboard scores
@@ -610,7 +657,7 @@ function App(props?: AppProps) {
           <div style={{paddingTop: 10, paddingBottom: 10}}>
             <Autocomplete
               disablePortal
-              options={playerList}
+              options={possibleList}
               loading={acLoading}
               filterOptions={acFilterOptions}
               sx={{width: (width / 2), maxHeight:height*0.4, textAlign: 'center'}}
@@ -697,7 +744,7 @@ function App(props?: AppProps) {
           <DialogContentText> Green means higher. </DialogContentText>
           <DialogContentText> Red means lower. </DialogContentText>
           <DialogContentText> Yellow means correct. </DialogContentText>
-          <DialogContentText> Try and guess the player in 5 attempts to win! </DialogContentText>
+          <DialogContentText> Try and guess the player in 6 attempts to win! </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setInstructionsOpen(false)}>Close</Button>
@@ -719,7 +766,7 @@ function App(props?: AppProps) {
         <DialogTitle>You Win!</DialogTitle>
         <DialogContent>
           {guessedPlayers !== undefined 
-            ? <DialogContentText> You took {guessedPlayers.findIndex((p: Player) => p.label === "Placeholder")} guesses! </DialogContentText>
+            ? <DialogContentText> You took {numberGuesses.toString()} guesses! </DialogContentText>
             : null
           }
         </DialogContent>
