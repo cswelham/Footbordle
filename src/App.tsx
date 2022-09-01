@@ -89,8 +89,12 @@ function App(props?: AppProps) {
   const [loseOpen, setLoseOpen] = useState<boolean>(false);
   // Holds dialog property for leaderboard
   const [leaderboardOpen, setLeaderboardOpen] = useState<boolean>(false);
+  // Holds dialog property for subscribe
+  const [subscribeOpen, setSubscribeOpen] = useState<boolean>(false);
   // Holds current user if they are in the database
   const [currentUser, setCurrentUser] = useState<User>({id: "", username: "", score: 0});
+  // Holds current email
+  const [currentEmail, setCurrentEmail] = useState<string>("");
 
   // Holds if autocomplete is loading
   const [acLoading, setAcLoading] = useState<boolean>(true);
@@ -123,7 +127,16 @@ function App(props?: AppProps) {
   // Retreives json from api
   async function apiCall() {
     try {
-      const query = await fetch('https://r90ugk5s0f.execute-api.us-east-1.amazonaws.com/players', {method: 'GET'});
+      // Get session token
+      var token: any = await Auth.currentSession().then(session => session).catch(err => console.log(err));
+      console.log(token);
+      // Call api
+      const query = await fetch('https://r90ugk5s0f.execute-api.us-east-1.amazonaws.com/players', {
+        method: 'GET',
+        headers: {
+          Authorization: token.idToken.jwtToken,
+        },
+      });
       const json = await query.json()
       if (apiArray === undefined) {
         setApiArray(json);
@@ -132,10 +145,11 @@ function App(props?: AppProps) {
         console.log("Players:");
         console.log(json);
       }
-      // Retrieve the user's username
+      // Retrieve the user's username and email
       Auth.currentAuthenticatedUser().then((user) => {
         const currentUsername: string = user.username.charAt(0).toUpperCase() + user.username.slice(1);
         setCurrentUser({ id: currentUser.username, username: currentUsername , score: 0});
+        setCurrentEmail(user.email);
       });
     }
     catch (e) {
@@ -277,8 +291,6 @@ function App(props?: AppProps) {
 
   // User guesses player
   function onGuess() {
-    console.log("Correct Player");
-    console.log(correctPlayer);
     // Add to guessed players
     var newGuessedPlayers: Player[] = [...guessedPlayers];
     const index: number = newGuessedPlayers.findIndex((p: Player) => p.label === "Placeholder");
@@ -333,6 +345,21 @@ function App(props?: AppProps) {
     else {
       return "yellow";
     }
+  }
+
+  // User subscribes to notifications
+  async function onSubscribe() {
+    // Get session token
+    var token: any = await Auth.currentSession().then(session => session).catch(err => console.log(err));
+    console.log(token);
+    // Call api
+    await fetch('https://r90ugk5s0f.execute-api.us-east-1.amazonaws.com/subscribe', {
+      method: 'POST',
+      body: currentEmail,
+      headers: {
+        Authorization: token.idToken.jwtToken,
+      },
+    });
   }
 
   // Update leaderboard array
@@ -647,6 +674,10 @@ function App(props?: AppProps) {
           <b>Restart</b>
         </Button>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <Button variant="contained" className='button-restart' onClick={() => setSubscribeOpen(true)}>
+          <b>Subscribe</b>
+        </Button>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         <Button variant="contained" className='button-restart' onClick={props?.signOut}>
           <b>Sign Out</b>
         </Button>
@@ -665,6 +696,17 @@ function App(props?: AppProps) {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setInstructionsOpen(false)}>Close</Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={subscribeOpen} onClose={() => setSubscribeOpen(false)}>
+        <DialogTitle>Subscribe to Email Notifications</DialogTitle>
+        <DialogContent>
+          <DialogContentText> Do you want to receieve email notifications from Footbordle? </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={onSubscribe}>Yes</Button>
+          <Button onClick={() => setSubscribeOpen(false)}>No</Button>
         </DialogActions>
       </Dialog>
 
