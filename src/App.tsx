@@ -102,7 +102,7 @@ function App(props?: AppProps) {
   const [acLoading, setAcLoading] = useState<boolean>(true);
   // Limit the autocomplete options
   const acFilterOptions = createFilterOptions({
-    limit: 50,
+    limit: 30,
     stringify: (option: Player) => option.label,
   });
   
@@ -180,7 +180,8 @@ function App(props?: AppProps) {
       // Create the list of players from api array
       var newPlayerList: Player[] = []
       if (apiArray !== undefined) {
-        const newApiArray = apiArray.filter((x: any) => x.positions !== 'GK');
+        var newApiArray: Player[] = apiArray.filter((x: any) => x.positions !== 'GK');
+        newApiArray = newApiArray.filter((x: any) => x.overall > 82);
         newPlayerList = newApiArray.map((p: any) => {
           return (
             {label: p.name, overall: p.overall, pace: p.pace, shooting: p.shooting, passing: p.passing, 
@@ -216,8 +217,6 @@ function App(props?: AppProps) {
       }
       
       setUserList(newDatabase);
-      console.log("Users:");
-      console.log(newDatabase);
     }
     catch (e) {
       // Data storage doesn't work so use manual list
@@ -357,6 +356,7 @@ function App(props?: AppProps) {
     // Reset variables
     setFinished('');
     setGuessedPlayers([
+      {label: 'Placeholder', overall: 0, pace: 0, shooting: 0, passing: 0, dribbling: 0, defending: 0, physical: 0},
       {label: 'Placeholder', overall: 0, pace: 0, shooting: 0, passing: 0, dribbling: 0, defending: 0, physical: 0},
       {label: 'Placeholder', overall: 0, pace: 0, shooting: 0, passing: 0, dribbling: 0, defending: 0, physical: 0},
       {label: 'Placeholder', overall: 0, pace: 0, shooting: 0, passing: 0, dribbling: 0, defending: 0, physical: 0},
