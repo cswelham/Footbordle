@@ -100,6 +100,8 @@ function App(props?: AppProps) {
 
   // Holds if autocomplete is loading
   const [acLoading, setAcLoading] = useState<boolean>(true);
+  // Holds autocomplete value
+  const [acValue, setAcValue] = useState<Player| null>(null);
   // Limit the autocomplete options
   const acFilterOptions = createFilterOptions({
     limit: 30,
@@ -272,6 +274,7 @@ function App(props?: AppProps) {
   
   // On autocomplete change
   function autocompleteChange(value: Player | null) {
+    setAcValue(value);
     // If null set all consts to null
     if (value === null) {
       setCurrentPlayer(undefined);
@@ -351,6 +354,7 @@ function App(props?: AppProps) {
 
   // User clicks restart
   function onRestart() {
+    setAcValue(null);
     // Pick new player
     setCorrectPlayer((playerList[Math.floor(Math.random()*playerList.length)]));
     // Reset variables
@@ -659,6 +663,7 @@ function App(props?: AppProps) {
               disablePortal
               options={possibleList}
               loading={acLoading}
+              value={acValue}
               filterOptions={acFilterOptions}
               sx={{width: (width / 2), maxHeight:height*0.4, textAlign: 'center'}}
               getOptionLabel={(option: Player) => option.label}
