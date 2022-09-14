@@ -19,7 +19,8 @@ interface Player {
   passing: number,
   dribbling: number,
   defending: number,
-  physical: number
+  physical: number,
+  image?: string
 }
 
 // Interface for a user
@@ -169,6 +170,7 @@ function App(props?: AppProps) {
   // Renders the fetch users on first render
   useEffect(() => {
     fetchUsers();
+    // eslint-disable-next-line
   }, []);
 
   // Setup the players array by calling the api
@@ -187,7 +189,7 @@ function App(props?: AppProps) {
         newPlayerList = newApiArray.map((p: any) => {
           return (
             {label: p.name, overall: p.overall, pace: p.pace, shooting: p.shooting, passing: p.passing, 
-              dribbling: p.dribbling, defending: p.defending, physical: p.physical }
+              dribbling: p.dribbling, defending: p.defending, physical: p.physical, image: p.faceurl }
           )
         });
         // Set player list
@@ -217,7 +219,7 @@ function App(props?: AppProps) {
       for (let i = 0; i < database.length; i++) {
         newDatabase[i] = { id: database[i].id, username: database[i].username, score: database[i].score };
       }
-      
+      newDatabase = orderUserArray(newDatabase);
       setUserList(newDatabase);
     }
     catch (e) {
@@ -770,8 +772,15 @@ function App(props?: AppProps) {
       <Dialog open={winOpen}>
         <DialogTitle>You Win!</DialogTitle>
         <DialogContent>
-          {guessedPlayers !== undefined 
-            ? <DialogContentText> You took {numberGuesses.toString()} guesses! </DialogContentText>
+          {guessedPlayers !== undefined && correctPlayer !== undefined
+            ? <>
+              <DialogContentText> You took {numberGuesses.toString()} guesses! </DialogContentText>
+              <DialogContentText> The player was {correctPlayer.label}. </DialogContentText> 
+              {correctPlayer.image !== undefined
+                ? <img src={correctPlayer.image} alt="Correct football player"/>
+                : null
+              }
+            </>
             : null
           }
         </DialogContent>
@@ -784,7 +793,13 @@ function App(props?: AppProps) {
         <DialogTitle>You Lose!</DialogTitle>
         <DialogContent>
           {correctPlayer !== undefined
-            ? <DialogContentText> The player was {correctPlayer.label}. </DialogContentText> 
+            ? <>
+              <DialogContentText> The player was {correctPlayer.label}. </DialogContentText> 
+              {correctPlayer.image !== undefined
+                ? <img src={correctPlayer.image} alt="Correct football player"/>
+                : null
+              }
+            </>
             : null
           }
         </DialogContent>
