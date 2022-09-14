@@ -158,7 +158,15 @@ function App(props?: AppProps) {
       // Retrieve the user's username and email
       Auth.currentAuthenticatedUser().then((user) => {
         const currentUsername: string = user.username.charAt(0).toUpperCase() + user.username.slice(1);
-        setCurrentUser({ id: currentUser.username, username: currentUsername , score: 0});
+
+        // Find if the user is in the database
+        const index: number = userList.findIndex((user: User) => user.username === currentUsername);
+        if (index > -1) {
+          setCurrentUser({ id: currentUser.username, username: currentUsername, score: userList[index].score });
+        }
+        else {
+          setCurrentUser({ id: currentUser.username, username: currentUsername , score: 0});
+        }
         setCurrentEmail(user.email);
       });
     }
@@ -221,6 +229,12 @@ function App(props?: AppProps) {
       }
       newDatabase = orderUserArray(newDatabase);
       setUserList(newDatabase);
+
+      // Find if the user is in the database
+      const index: number = userList.findIndex((user: User) => user.username === currentUser.username);
+      if (index > -1) {
+        setCurrentUser({ id: userList[index].id, username: currentUser.username, score: userList[index].score });
+      }
     }
     catch (e) {
       // Data storage doesn't work so use manual list
@@ -774,7 +788,7 @@ function App(props?: AppProps) {
         <DialogContent>
           {guessedPlayers !== undefined && correctPlayer !== undefined
             ? <>
-              <DialogContentText> You took {numberGuesses.toString()} guesses! </DialogContentText>
+              <DialogContentText> You took {numberGuesses().toString()} guesses! </DialogContentText>
               <DialogContentText> The player was {correctPlayer.label}. </DialogContentText> 
               {correctPlayer.image !== undefined
                 ? <img src={correctPlayer.image} alt="Correct football player"/>
