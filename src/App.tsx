@@ -9,6 +9,7 @@ import { Auth, API } from 'aws-amplify';
 import { listUsers } from './graphql/queries';
 import { createUser as createUserMutation, updateUser as updateUserMutation } from './graphql/mutations';
 import { GraphQLResult } from '@aws-amplify/api';
+import image from '../src/soccer.png';
 
 // Interface for a player
 interface Player {
@@ -44,45 +45,45 @@ function App(props?: AppProps) {
   const [possibleList, setPossibleList] = useState<Player[]>([]);
   // Holds list of all users
   const [userList, setUserList] = useState<User[]>([]);
-  
+
   // List of all footballers
   const playerListManual: Player[] = [
-    {label: 'Lionel Messi', overall: 93, pace: 85, shooting: 92, passing: 91, dribbling: 95, defending: 34, physical: 60},
-    {label: 'Robert Lewandowski', overall: 92, pace: 78, shooting: 92, passing: 79, dribbling: 86, defending: 44, physical: 82},
-    {label: 'Cristiano Ronaldo', overall: 91, pace: 87, shooting: 94, passing: 80, dribbling: 88, defending: 34, physical: 75},
-    {label: 'Neymar Jr', overall: 91, pace: 91, shooting: 83, passing: 86, dribbling: 94, defending: 37, physical: 63},
-    {label: 'Kevin De Bruyne', overall: 91, pace: 76, shooting: 86, passing: 93, dribbling: 88, defending: 64, physical: 78},
-    {label: 'Kylian Mbappe', overall: 91, pace: 97, shooting: 88, passing: 80, dribbling: 92, defending: 36, physical: 77},
-    {label: 'Harry Kane', overall: 90, pace: 70, shooting: 91, passing: 83, dribbling: 83, defending: 47, physical: 83},
-    {label: 'Ngolo Kante', overall: 89, pace: 78, shooting: 66, passing: 75, dribbling: 82, defending: 87, physical: 83},
-    {label: 'Karim Benzema', overall: 89, pace: 76, shooting: 86, passing: 81, dribbling: 87, defending: 39, physical: 77},
-    {label: 'Heung Min Son', overall: 89, pace: 88, shooting: 87, passing: 82, dribbling: 86, defending: 43, physical: 69},
+    { label: 'Lionel Messi', overall: 93, pace: 85, shooting: 92, passing: 91, dribbling: 95, defending: 34, physical: 60 },
+    { label: 'Robert Lewandowski', overall: 92, pace: 78, shooting: 92, passing: 79, dribbling: 86, defending: 44, physical: 82 },
+    { label: 'Cristiano Ronaldo', overall: 91, pace: 87, shooting: 94, passing: 80, dribbling: 88, defending: 34, physical: 75 },
+    { label: 'Neymar Jr', overall: 91, pace: 91, shooting: 83, passing: 86, dribbling: 94, defending: 37, physical: 63 },
+    { label: 'Kevin De Bruyne', overall: 91, pace: 76, shooting: 86, passing: 93, dribbling: 88, defending: 64, physical: 78 },
+    { label: 'Kylian Mbappe', overall: 91, pace: 97, shooting: 88, passing: 80, dribbling: 92, defending: 36, physical: 77 },
+    { label: 'Harry Kane', overall: 90, pace: 70, shooting: 91, passing: 83, dribbling: 83, defending: 47, physical: 83 },
+    { label: 'Ngolo Kante', overall: 89, pace: 78, shooting: 66, passing: 75, dribbling: 82, defending: 87, physical: 83 },
+    { label: 'Karim Benzema', overall: 89, pace: 76, shooting: 86, passing: 81, dribbling: 87, defending: 39, physical: 77 },
+    { label: 'Heung Min Son', overall: 89, pace: 88, shooting: 87, passing: 82, dribbling: 86, defending: 43, physical: 69 },
   ];
 
   // Holds player to guess
-  const [correctPlayer, setCorrectPlayer] = useState<Player>(playerList[Math.floor(Math.random()*playerList.length)]);
+  const [correctPlayer, setCorrectPlayer] = useState<Player>(playerList[Math.floor(Math.random() * playerList.length)]);
   // Holds if user has finished
   const [finished, setFinished] = useState<string>('');
 
   // Holds guessed players
   const [guessedPlayers, setGuessedPlayers] = useState<Player[]>([
-    {label: 'Placeholder', overall: 99, pace: 0, shooting: 0, passing: 0, dribbling: 0, defending: 0, physical: 0},
-    {label: 'Placeholder', overall: 99, pace: 0, shooting: 0, passing: 0, dribbling: 0, defending: 0, physical: 0},
-    {label: 'Placeholder', overall: 99, pace: 0, shooting: 0, passing: 0, dribbling: 0, defending: 0, physical: 0},
-    {label: 'Placeholder', overall: 99, pace: 0, shooting: 0, passing: 0, dribbling: 0, defending: 0, physical: 0},
-    {label: 'Placeholder', overall: 99, pace: 0, shooting: 0, passing: 0, dribbling: 0, defending: 0, physical: 0},
-    {label: 'Placeholder', overall: 99, pace: 0, shooting: 0, passing: 0, dribbling: 0, defending: 0, physical: 0},
+    { label: 'Placeholder', overall: 99, pace: 0, shooting: 0, passing: 0, dribbling: 0, defending: 0, physical: 0 },
+    { label: 'Placeholder', overall: 99, pace: 0, shooting: 0, passing: 0, dribbling: 0, defending: 0, physical: 0 },
+    { label: 'Placeholder', overall: 99, pace: 0, shooting: 0, passing: 0, dribbling: 0, defending: 0, physical: 0 },
+    { label: 'Placeholder', overall: 99, pace: 0, shooting: 0, passing: 0, dribbling: 0, defending: 0, physical: 0 },
+    { label: 'Placeholder', overall: 99, pace: 0, shooting: 0, passing: 0, dribbling: 0, defending: 0, physical: 0 },
+    { label: 'Placeholder', overall: 99, pace: 0, shooting: 0, passing: 0, dribbling: 0, defending: 0, physical: 0 },
   ]);
 
   // Variables to store current selected stats
   const [currentPlayer, setCurrentPlayer] = useState<Player | undefined>(undefined);
   const [currentOverall, setCurrentOverall] = useState<string>('');
   const [currentPace, setCurrentPace] = useState<string>('');
-  const [currentShooting, setCurrentShooting]  = useState<string>('');
+  const [currentShooting, setCurrentShooting] = useState<string>('');
   const [currentPassing, setCurrentPassing] = useState<string>('');
-  const [currentDribbling, setCurrentDribbling]  = useState<string>('');
-  const [currentDefending, setCurrentDefending]  = useState<string>('');
-  const [currentPhysical, setCurrentPhysical]  = useState<string>('');
+  const [currentDribbling, setCurrentDribbling] = useState<string>('');
+  const [currentDefending, setCurrentDefending] = useState<string>('');
+  const [currentPhysical, setCurrentPhysical] = useState<string>('');
 
   // Holds dialog property for instructions
   const [instructionsOpen, setInstructionsOpen] = useState<boolean>(false);
@@ -95,20 +96,20 @@ function App(props?: AppProps) {
   // Holds dialog property for subscribe
   const [subscribeOpen, setSubscribeOpen] = useState<boolean>(false);
   // Holds current user if they are in the database
-  const [currentUser, setCurrentUser] = useState<User>({id: "", username: "", score: 0});
+  const [currentUser, setCurrentUser] = useState<User>({ id: "", username: "", score: 0 });
   // Holds current email
   const [currentEmail, setCurrentEmail] = useState<string>("");
 
   // Holds if autocomplete is loading
   const [acLoading, setAcLoading] = useState<boolean>(true);
   // Holds autocomplete value
-  const [acValue, setAcValue] = useState<Player| null>(null);
+  const [acValue, setAcValue] = useState<Player | null>(null);
   // Limit the autocomplete options
   const acFilterOptions = createFilterOptions({
     limit: 30,
     stringify: (option: Player) => option.label,
   });
-  
+
 
   // Holds height and width of screen
   const { height, width } = useWindowDimensions();
@@ -165,7 +166,7 @@ function App(props?: AppProps) {
           setCurrentUser({ id: currentUser.username, username: currentUsername, score: userList[index].score });
         }
         else {
-          setCurrentUser({ id: currentUser.username, username: currentUsername , score: 0});
+          setCurrentUser({ id: currentUser.username, username: currentUsername, score: 0 });
         }
         setCurrentEmail(user.email);
       });
@@ -196,15 +197,17 @@ function App(props?: AppProps) {
         newApiArray = newApiArray.filter((x: any) => x.overall > 82);
         newPlayerList = newApiArray.map((p: any) => {
           return (
-            {label: p.name, overall: p.overall, pace: p.pace, shooting: p.shooting, passing: p.passing, 
-              dribbling: p.dribbling, defending: p.defending, physical: p.physical, image: p.faceurl }
+            {
+              label: p.name, overall: p.overall, pace: p.pace, shooting: p.shooting, passing: p.passing,
+              dribbling: p.dribbling, defending: p.defending, physical: p.physical, image: p.faceurl
+            }
           )
         });
         // Set player list
         setPlayerList(newPlayerList);
         setPossibleList(newPlayerList);
         // Set the correct player
-        setCorrectPlayer((newPlayerList[Math.floor(Math.random()*newPlayerList.length)]));
+        setCorrectPlayer((newPlayerList[Math.floor(Math.random() * newPlayerList.length)]));
       };
     }
     // Api not working
@@ -212,7 +215,7 @@ function App(props?: AppProps) {
       // Set player list
       setPlayerList(playerListManual);
       // Set the correct player
-      setCorrectPlayer((playerListManual[Math.floor(Math.random()*playerList.length)]));
+      setCorrectPlayer((playerListManual[Math.floor(Math.random() * playerList.length)]));
     }
     // eslint-disable-next-line
   }, [apiArray])
@@ -238,22 +241,22 @@ function App(props?: AppProps) {
     }
     catch (e) {
       // Data storage doesn't work so use manual list
-       setUserList([
-        {id: "1", username: "Robert", score: 5},
-        {id: "2", username: "James", score: 7},
-        {id: "3", username: "Kerry", score: 12},
-        {id: "4", username: "Lauren", score: 2},
-        {id: "5", username: "Bruce", score: 4},
-        {id: "6", username: "Kyle", score: 11},
-        {id: "7", username: "Jake", score: 9},
-      ]);       
+      setUserList([
+        { id: "1", username: "Robert", score: 5 },
+        { id: "2", username: "James", score: 7 },
+        { id: "3", username: "Kerry", score: 12 },
+        { id: "4", username: "Lauren", score: 2 },
+        { id: "5", username: "Bruce", score: 4 },
+        { id: "6", username: "Kyle", score: 11 },
+        { id: "7", username: "Jake", score: 9 },
+      ]);
     }
   }
 
   // Create a new user
   async function createUser() {
-    await API.graphql({ query: createUserMutation, variables: { input: {username: currentUser.username, score: 1} } });
-    const newUserList: User[] = [ ...userList, {username: currentUser.username, score: 1} ];
+    await API.graphql({ query: createUserMutation, variables: { input: { username: currentUser.username, score: 1 } } });
+    const newUserList: User[] = [...userList, { username: currentUser.username, score: 1 }];
     setUserList(orderUserArray(newUserList));
     setCurrentUser({ id: currentUser.username, username: currentUser.username, score: 1 });
   }
@@ -267,7 +270,7 @@ function App(props?: AppProps) {
       // Add one to score
       var newUserList: User[] = [...userList];
       newUserList[current].score = Number(newUserList[current].score) + 1;
-      await API.graphql({ query: updateUserMutation, variables: { input: {id: newUserList[current].id, username: currentUser.username, score: (Number(newUserList[current].score) + 1)} } });
+      await API.graphql({ query: updateUserMutation, variables: { input: { id: newUserList[current].id, username: currentUser.username, score: (Number(newUserList[current].score) + 1) } } });
       newUserList = orderUserArray(newUserList);
       setUserList(newUserList);
       setCurrentUser({ id: newUserList[current].id, username: currentUser.username, score: (Number(currentUser.score) + 1) });
@@ -287,7 +290,7 @@ function App(props?: AppProps) {
   function orderUserArray(array: User[]) {
     return array.sort((user1: User, user2: User) => user2.score - user1.score);
   }
-  
+
   // On autocomplete change
   function autocompleteChange(value: Player | null) {
     setAcValue(value);
@@ -348,7 +351,7 @@ function App(props?: AppProps) {
           }
           // Get lowest overall range
           else if (overall < correctPlayer.overall) {
-            if (overall > low) 
+            if (overall > low)
               low = overall;
           }
           // Get highest overall range
@@ -372,16 +375,16 @@ function App(props?: AppProps) {
   function onRestart() {
     setAcValue(null);
     // Pick new player
-    setCorrectPlayer((playerList[Math.floor(Math.random()*playerList.length)]));
+    setCorrectPlayer((playerList[Math.floor(Math.random() * playerList.length)]));
     // Reset variables
     setFinished('');
     setGuessedPlayers([
-      {label: 'Placeholder', overall: 0, pace: 0, shooting: 0, passing: 0, dribbling: 0, defending: 0, physical: 0},
-      {label: 'Placeholder', overall: 0, pace: 0, shooting: 0, passing: 0, dribbling: 0, defending: 0, physical: 0},
-      {label: 'Placeholder', overall: 0, pace: 0, shooting: 0, passing: 0, dribbling: 0, defending: 0, physical: 0},
-      {label: 'Placeholder', overall: 0, pace: 0, shooting: 0, passing: 0, dribbling: 0, defending: 0, physical: 0},
-      {label: 'Placeholder', overall: 0, pace: 0, shooting: 0, passing: 0, dribbling: 0, defending: 0, physical: 0},
-      {label: 'Placeholder', overall: 0, pace: 0, shooting: 0, passing: 0, dribbling: 0, defending: 0, physical: 0},
+      { label: 'Placeholder', overall: 0, pace: 0, shooting: 0, passing: 0, dribbling: 0, defending: 0, physical: 0 },
+      { label: 'Placeholder', overall: 0, pace: 0, shooting: 0, passing: 0, dribbling: 0, defending: 0, physical: 0 },
+      { label: 'Placeholder', overall: 0, pace: 0, shooting: 0, passing: 0, dribbling: 0, defending: 0, physical: 0 },
+      { label: 'Placeholder', overall: 0, pace: 0, shooting: 0, passing: 0, dribbling: 0, defending: 0, physical: 0 },
+      { label: 'Placeholder', overall: 0, pace: 0, shooting: 0, passing: 0, dribbling: 0, defending: 0, physical: 0 },
+      { label: 'Placeholder', overall: 0, pace: 0, shooting: 0, passing: 0, dribbling: 0, defending: 0, physical: 0 },
     ]);
     setCurrentPlayer(undefined);
     setCurrentOverall('');
@@ -463,19 +466,19 @@ function App(props?: AppProps) {
     (user: User, index: number) => {
       if (index < 5) {
         if (user.username === currentUser.username) {
-          return ( 
+          return (
             <>
               <Grid item xs={9}>
-                <Item style={{backgroundColor: 'yellow'}}>{user.username}</Item>
+                <Item style={{ backgroundColor: 'yellow' }}>{user.username}</Item>
               </Grid>
               <Grid item xs={3}>
-                <Item style={{backgroundColor: 'yellow'}}>{user.score}</Item>
+                <Item style={{ backgroundColor: 'yellow' }}>{user.score}</Item>
               </Grid>
             </>
           );
         }
         else {
-          return ( 
+          return (
             <>
               <Grid item xs={9}>
                 <Item>{user.username}</Item>
@@ -486,7 +489,7 @@ function App(props?: AppProps) {
             </>
           );
         }
-        
+
       }
       else {
         return null;
@@ -500,44 +503,44 @@ function App(props?: AppProps) {
     (guess: Player) => {
       if (guess.label === "Placeholder") {
         return (
-          <Grid container spacing={0.5} style={{paddingTop: 10}}>
+          <Grid container spacing={0.5} style={{ paddingTop: 10 }}>
             <Grid item xs={3}> <Item></Item>  </Grid>
-            <Grid item xs={9/7}> <Item></Item> </Grid>
-            <Grid item xs={9/7}> <Item></Item> </Grid>
-            <Grid item xs={9/7}> <Item></Item> </Grid>
-            <Grid item xs={9/7}> <Item></Item> </Grid>
-            <Grid item xs={9/7}> <Item></Item> </Grid>
-            <Grid item xs={9/7}> <Item></Item> </Grid>
-            <Grid item xs={9/7}> <Item></Item> </Grid>
+            <Grid item xs={9 / 7}> <Item></Item> </Grid>
+            <Grid item xs={9 / 7}> <Item></Item> </Grid>
+            <Grid item xs={9 / 7}> <Item></Item> </Grid>
+            <Grid item xs={9 / 7}> <Item></Item> </Grid>
+            <Grid item xs={9 / 7}> <Item></Item> </Grid>
+            <Grid item xs={9 / 7}> <Item></Item> </Grid>
+            <Grid item xs={9 / 7}> <Item></Item> </Grid>
           </Grid>
         )
       }
       else {
         return (
-          <Grid container spacing={0.5} style={{paddingTop: 10}}>
+          <Grid container spacing={0.5} style={{ paddingTop: 10 }}>
             <Grid item xs={3}>
               <Item>{guess.label}</Item>
             </Grid>
-            <Grid item xs={9/7}>
-              <Item style={{backgroundColor: gridItemColour(guess.overall, correctPlayer.overall)}}>{guess.overall}</Item>
+            <Grid item xs={9 / 7}>
+              <Item style={{ backgroundColor: gridItemColour(guess.overall, correctPlayer.overall) }}>{guess.overall}</Item>
             </Grid>
-            <Grid item xs={9/7}>
-              <Item style={{backgroundColor: gridItemColour(guess.pace, correctPlayer.pace)}}>{guess.pace}</Item>
+            <Grid item xs={9 / 7}>
+              <Item style={{ backgroundColor: gridItemColour(guess.pace, correctPlayer.pace) }}>{guess.pace}</Item>
             </Grid>
-            <Grid item xs={9/7}>
-              <Item style={{backgroundColor: gridItemColour(guess.shooting, correctPlayer.shooting)}}>{guess.shooting}</Item>
+            <Grid item xs={9 / 7}>
+              <Item style={{ backgroundColor: gridItemColour(guess.shooting, correctPlayer.shooting) }}>{guess.shooting}</Item>
             </Grid>
-            <Grid item xs={9/7}>
-              <Item style={{backgroundColor: gridItemColour(guess.passing, correctPlayer.passing)}}>{guess.passing}</Item>
+            <Grid item xs={9 / 7}>
+              <Item style={{ backgroundColor: gridItemColour(guess.passing, correctPlayer.passing) }}>{guess.passing}</Item>
             </Grid>
-            <Grid item xs={9/7}>
-              <Item style={{backgroundColor: gridItemColour(guess.dribbling, correctPlayer.dribbling)}}>{guessedPlayers[0].dribbling}</Item>
+            <Grid item xs={9 / 7}>
+              <Item style={{ backgroundColor: gridItemColour(guess.dribbling, correctPlayer.dribbling) }}>{guessedPlayers[0].dribbling}</Item>
             </Grid>
-            <Grid item xs={9/7}>
-              <Item style={{backgroundColor: gridItemColour(guess.defending, correctPlayer.defending)}}>{guess.defending}</Item>
+            <Grid item xs={9 / 7}>
+              <Item style={{ backgroundColor: gridItemColour(guess.defending, correctPlayer.defending) }}>{guess.defending}</Item>
             </Grid>
-            <Grid item xs={9/7}>
-              <Item style={{backgroundColor: gridItemColour(guess.physical, correctPlayer.physical)}}>{guess.physical}</Item>
+            <Grid item xs={9 / 7}>
+              <Item style={{ backgroundColor: gridItemColour(guess.physical, correctPlayer.physical) }}>{guess.physical}</Item>
             </Grid>
           </Grid>
         )
@@ -547,168 +550,168 @@ function App(props?: AppProps) {
   ), [guessedPlayers]);
 
   return (
-    <div style={{height: height-1, width: width, overflow: 'hidden'}}>
-      <header className="App-header" style={{height: height * 0.25, width: width}}>
-        <h1 className="header">Footbordle</h1>
+    <div className='myDiv' style={{ height: height - 1, width: width, overflow: 'hidden' }}>
+      <header className="App-header" style={{ height: height * 0.25, width: width }}>
+        <h1>F<img src={image} style={{ height: 50 }}></img><img src={image} style={{ height: 50 }}></img>tbordle</h1>
         <p>Wordle but for FIFA 22 players! Try to guess the FIFA footballer in 5 guesses to win!</p>
       </header>
 
-      <section className="container" style={{height: height * 0.65, width: width}}>
+      <section className="container" style={{ height: height * 0.65, width: width }}>
 
-        <div className="one" style={{height: height * 0.65, width: width/2 - 20, textAlign: 'center'}}>
+        <div className="one" style={{ height: height * 0.65, width: width / 2 - 20, textAlign: 'center' }}>
           <h2>Past Guesses</h2>
           <Box sx={{ flexGrow: 1 }}>
-            <Grid container spacing={0.5}>
+            <Grid className='item-name' container spacing={0.5}>
               <Grid item xs={3}>
-                <ItemBlue><b>Name</b></ItemBlue>
+                <Item><b>Name</b></Item>
               </Grid>
-              <Grid item xs={9/7}>
-                <ItemBlue><b>Overall</b></ItemBlue>
+              <Grid item xs={9 / 7}>
+                <Item><b>Overall</b></Item>
               </Grid>
-              <Grid item xs={9/7}>
-                <ItemBlue><b>Pace</b></ItemBlue>
+              <Grid item xs={9 / 7}>
+                <Item><b>Pace</b></Item>
               </Grid>
-              <Grid item xs={9/7}>
-                <ItemBlue><b>Shooting</b></ItemBlue>
+              <Grid item xs={9 / 7}>
+                <Item><b>Shooting</b></Item>
               </Grid>
-              <Grid item xs={9/7}>
-                <ItemBlue><b>Passing</b></ItemBlue>
+              <Grid item xs={9 / 7}>
+                <Item><b>Passing</b></Item>
               </Grid>
-              <Grid item xs={9/7}>
-                <ItemBlue><b>Dribbling</b></ItemBlue>
+              <Grid item xs={9 / 7}>
+                <Item><b>Dribbling</b></Item>
               </Grid>
-              <Grid item xs={9/7}>
-                <ItemBlue><b>Defending</b></ItemBlue>
+              <Grid item xs={9 / 7}>
+                <Item><b>Defending</b></Item>
               </Grid>
-              <Grid item xs={9/7}>
-                <ItemBlue><b>Physical</b></ItemBlue>
+              <Grid item xs={9 / 7}>
+                <Item><b>Physical</b></Item>
               </Grid>
             </Grid>
             {guesses}
           </Box>
-          
-          {finished === "L" 
-              ? <>
-                <h2>Correct Player</h2>
-                <Box sx={{ flexGrow: 1 }}>
-                  <Grid container spacing={0.5} style={{paddingTop: 10}}>
-                    <Grid item xs={3}>
-                      <Item style={{backgroundColor: "yellow"}}>{correctPlayer.label}</Item>
-                    </Grid>
-                    <Grid item xs={9/7}>
-                      <Item style={{backgroundColor: "yellow"}}>{correctPlayer.overall}</Item>
-                    </Grid>
-                    <Grid item xs={9/7}>
-                      <Item style={{backgroundColor: "yellow"}}>{correctPlayer.pace}</Item>
-                    </Grid>
-                    <Grid item xs={9/7}>
-                      <Item style={{backgroundColor: "yellow"}}>{correctPlayer.shooting}</Item>
-                    </Grid>
-                    <Grid item xs={9/7}>
-                      <Item style={{backgroundColor: "yellow"}}>{correctPlayer.passing}</Item>
-                    </Grid>
-                    <Grid item xs={9/7}>
-                      <Item style={{backgroundColor: "yellow"}}>{correctPlayer.dribbling}</Item>
-                    </Grid>
-                    <Grid item xs={9/7}>
-                      <Item style={{backgroundColor: "yellow"}}>{correctPlayer.defending}</Item>
-                    </Grid>
-                    <Grid item xs={9/7}>
-                      <Item style={{backgroundColor: "yellow"}}>{correctPlayer.physical}</Item>
-                    </Grid>
+
+          {finished === "L"
+            ? <>
+              <h2>Correct Player</h2>
+              <Box sx={{ flexGrow: 1 }}>
+                <Grid container spacing={0.5} style={{ paddingTop: 10 }}>
+                  <Grid item xs={3}>
+                    <Item style={{ backgroundColor: "yellow" }}>{correctPlayer.label}</Item>
                   </Grid>
-                </Box>
-              </>
-              : null
-            }
+                  <Grid item xs={9 / 7}>
+                    <Item style={{ backgroundColor: "yellow" }}>{correctPlayer.overall}</Item>
+                  </Grid>
+                  <Grid item xs={9 / 7}>
+                    <Item style={{ backgroundColor: "yellow" }}>{correctPlayer.pace}</Item>
+                  </Grid>
+                  <Grid item xs={9 / 7}>
+                    <Item style={{ backgroundColor: "yellow" }}>{correctPlayer.shooting}</Item>
+                  </Grid>
+                  <Grid item xs={9 / 7}>
+                    <Item style={{ backgroundColor: "yellow" }}>{correctPlayer.passing}</Item>
+                  </Grid>
+                  <Grid item xs={9 / 7}>
+                    <Item style={{ backgroundColor: "yellow" }}>{correctPlayer.dribbling}</Item>
+                  </Grid>
+                  <Grid item xs={9 / 7}>
+                    <Item style={{ backgroundColor: "yellow" }}>{correctPlayer.defending}</Item>
+                  </Grid>
+                  <Grid item xs={9 / 7}>
+                    <Item style={{ backgroundColor: "yellow" }}>{correctPlayer.physical}</Item>
+                  </Grid>
+                </Grid>
+              </Box>
+            </>
+            : null
+          }
         </div>
 
-        <div className="two" style={{height: height * 0.65, width: width/2, textAlign: 'center'}}>
+        <div className="two" style={{ height: height * 0.65, width: width / 2, textAlign: 'center' }}>
           <h2 className='h2-pad'>Current Guess</h2>
 
-          <Grid container spacing={0.5}>
-              <Grid item xs={12/7}>
-                <ItemBlue><b>Overall</b></ItemBlue>
-              </Grid>
-              <Grid item xs={12/7}>
-                <ItemBlue><b>Pace</b></ItemBlue>
-              </Grid>
-              <Grid item xs={12/7}>
-                <ItemBlue><b>Shooting</b></ItemBlue>
-              </Grid>
-              <Grid item xs={12/7}>
-                <ItemBlue><b>Passing</b></ItemBlue>
-              </Grid>
-              <Grid item xs={12/7}>
-                <ItemBlue><b>Dribbling</b></ItemBlue>
-              </Grid>
-              <Grid item xs={12/7}>
-                <ItemBlue><b>Defending</b></ItemBlue>
-              </Grid>
-              <Grid item xs={12/7}>
-                <ItemBlue><b>Physical</b></ItemBlue>
-              </Grid>
+          <Grid className='item-name' container spacing={0.5}>
+            <Grid item xs={12 / 7}>
+              <Item><b>Overall</b></Item>
             </Grid>
-
-          <Grid container spacing={0.5} style={{paddingTop: 10}}>
-              <Grid item xs={12/7}>
-                <Item>{currentOverall}</Item>
-              </Grid>
-              <Grid item xs={12/7}>
-                <Item>{currentPace}</Item>
-              </Grid>
-              <Grid item xs={12/7}>
-                <Item>{currentShooting}</Item>
-              </Grid>
-              <Grid item xs={12/7}>
-                <Item>{currentPassing}</Item>
-              </Grid>
-              <Grid item xs={12/7}>
-                <Item>{currentDribbling}</Item>
-              </Grid>
-              <Grid item xs={12/7}>
-                <Item>{currentDefending}</Item>
-              </Grid>
-              <Grid item xs={12/7}>
-                <Item>{currentPhysical}</Item>
-              </Grid>
+            <Grid item xs={12 / 7}>
+              <Item><b>Pace</b></Item>
             </Grid>
+            <Grid item xs={12 / 7}>
+              <Item><b>Shooting</b></Item>
+            </Grid>
+            <Grid item xs={12 / 7}>
+              <Item><b>Passing</b></Item>
+            </Grid>
+            <Grid item xs={12 / 7}>
+              <Item><b>Dribbling</b></Item>
+            </Grid>
+            <Grid item xs={12 / 7}>
+              <Item><b>Defending</b></Item>
+            </Grid>
+            <Grid item xs={12 / 7}>
+              <Item><b>Physical</b></Item>
+            </Grid>
+          </Grid>
 
-          <div style={{paddingTop: 10, paddingBottom: 10}}>
+          <Grid container spacing={0.5} style={{ paddingTop: 10 }}>
+            <Grid item xs={12 / 7}>
+              <Item>{currentOverall}</Item>
+            </Grid>
+            <Grid item xs={12 / 7}>
+              <Item>{currentPace}</Item>
+            </Grid>
+            <Grid item xs={12 / 7}>
+              <Item>{currentShooting}</Item>
+            </Grid>
+            <Grid item xs={12 / 7}>
+              <Item>{currentPassing}</Item>
+            </Grid>
+            <Grid item xs={12 / 7}>
+              <Item>{currentDribbling}</Item>
+            </Grid>
+            <Grid item xs={12 / 7}>
+              <Item>{currentDefending}</Item>
+            </Grid>
+            <Grid item xs={12 / 7}>
+              <Item>{currentPhysical}</Item>
+            </Grid>
+          </Grid>
+
+          <div style={{ paddingTop: 10, paddingBottom: 10 }}>
             <Autocomplete
               disablePortal
               options={possibleList}
               loading={acLoading}
               value={acValue}
               filterOptions={acFilterOptions}
-              sx={{width: (width / 2), maxHeight:height*0.4, textAlign: 'center'}}
+              sx={{ width: (width / 2), maxHeight: height * 0.4, textAlign: 'center', backgroundColor:'white' }}
               getOptionLabel={(option: Player) => option.label}
               onChange={(event: any, newValue: Player | null) => autocompleteChange(newValue)}
               renderOption={(props, option: Player) => (
                 <Box component="li" sx={{ '& > img': { mr: 2, flexShrink: 0 } }} {...props}>
-                  <Grid container style={{paddingTop: 10}}>
+                  <Grid container style={{ paddingTop: 10 }}>
                     <Grid item xs={3}>
                       <Item><b>{option.label}</b></Item>
                     </Grid>
-                    <Grid item xs={9/7}>
+                    <Grid item xs={9 / 7}>
                       <Item><b>{option.overall}</b></Item>
                     </Grid>
-                    <Grid item xs={9/7}>
+                    <Grid item xs={9 / 7}>
                       <Item>PAC:{option.pace}</Item>
                     </Grid>
-                    <Grid item xs={9/7}>
+                    <Grid item xs={9 / 7}>
                       <Item>SHO:{option.shooting}</Item>
                     </Grid>
-                    <Grid item xs={9/7}>
+                    <Grid item xs={9 / 7}>
                       <Item>PAS:{option.passing}</Item>
                     </Grid>
-                    <Grid item xs={9/7}>
+                    <Grid item xs={9 / 7}>
                       <Item>DRI:{option.dribbling}</Item>
                     </Grid>
-                    <Grid item xs={9/7}>
+                    <Grid item xs={9 / 7}>
                       <Item>DEF:{option.defending}</Item>
                     </Grid>
-                    <Grid item xs={9/7}>
+                    <Grid item xs={9 / 7}>
                       <Item>PHY:{option.physical}</Item>
                     </Grid>
                   </Grid>
@@ -726,32 +729,30 @@ function App(props?: AppProps) {
             />
           </div>
 
-          <Button variant="contained" className="button-guess" onClick={onGuess} disabled={currentPlayer === undefined || finished !== ''}>
-            <b>Guess</b>
-          </Button>
-          
+          <div className='button1'>
+            <Button variant="contained" className="btn-hover button-guess" onClick={onGuess} disabled={currentPlayer === undefined || finished !== ''}>
+              <b>Guess</b>
+            </Button>
+          </div>
+
         </div>
 
       </section>
 
-      <div style={{height: height * 0.1-1, width: width, textAlign: 'center'}}>
-        <Button variant="contained" className='button-restart' onClick={() => setInstructionsOpen(true)}>
+      <div className='button2' style={{ height: height * 0.1 - 1, width: width, textAlign: 'center' }}>
+        <Button variant="contained" className='btn-hover button-restart' onClick={() => setInstructionsOpen(true)}>
           <b>Instructions</b>
         </Button>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <Button variant="contained" className='button-restart' onClick={onLeaderboardClick}>
+        <Button variant="contained" className='btn-hover button-restart' onClick={onLeaderboardClick}>
           <b>Leaderboard</b>
         </Button>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <Button variant="contained" className='button-restart' onClick={onRestart}>
+        <Button variant="contained" className='btn-hover button-restart' onClick={onRestart}>
           <b>Restart</b>
         </Button>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <Button variant="contained" className='button-restart' onClick={() => setSubscribeOpen(true)}>
+        <Button variant="contained" className='btn-hover button-restart' onClick={() => setSubscribeOpen(true)}>
           <b>Subscribe</b>
         </Button>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <Button variant="contained" className='button-restart' onClick={props?.signOut}>
+        <Button variant="contained" className='btn-hover button-restart' onClick={props?.signOut}>
           <b>Sign Out</b>
         </Button>
       </div>
@@ -789,9 +790,9 @@ function App(props?: AppProps) {
           {guessedPlayers !== undefined && correctPlayer !== undefined
             ? <>
               <DialogContentText> You took {numberGuesses().toString()} guesses! </DialogContentText>
-              <DialogContentText> The player was {correctPlayer.label}. </DialogContentText> 
+              <DialogContentText> The player was {correctPlayer.label}. </DialogContentText>
               {correctPlayer.image !== undefined
-                ? <img src={correctPlayer.image} alt="Correct football player"/>
+                ? <img src={correctPlayer.image} alt="Correct football player" />
                 : null
               }
             </>
@@ -808,9 +809,9 @@ function App(props?: AppProps) {
         <DialogContent>
           {correctPlayer !== undefined
             ? <>
-              <DialogContentText> The player was {correctPlayer.label}. </DialogContentText> 
+              <DialogContentText> The player was {correctPlayer.label}. </DialogContentText>
               {correctPlayer.image !== undefined
-                ? <img src={correctPlayer.image} alt="Correct football player"/>
+                ? <img src={correctPlayer.image} alt="Correct football player" />
                 : null
               }
             </>
@@ -827,33 +828,35 @@ function App(props?: AppProps) {
         <DialogContent>
           <DialogContentText><b>Top 5</b></DialogContentText>
           <Box sx={{ flexGrow: 1 }}>
-            <Grid container spacing={0.5} style={{paddingTop: 10}}>
+            <Grid className='item-name' container spacing={0.5} style={{ paddingTop: 10 }}>
               <Grid item xs={9}>
-                <ItemBlue>Username</ItemBlue>
+                <Item>Username</Item>
               </Grid>
               <Grid item xs={3}>
-                <ItemBlue>Score</ItemBlue>
-              </Grid> 
+                <Item>Score</Item>
+              </Grid>
+            </Grid>
+            <Grid container spacing={0.5} style={{ paddingTop: 10 }}>
               {leaderboard}
             </Grid>
           </Box>
-        {currentUser.username !== ""
-          ? <>
+          {currentUser.username !== ""
+            ? <>
               <DialogContentText>--</DialogContentText>
               <DialogContentText><b>Your Score</b></DialogContentText>
               <Box sx={{ flexGrow: 1 }}>
-                <Grid container spacing={0.5} style={{paddingTop: 10}}>
+                <Grid container spacing={0.5} style={{ paddingTop: 10 }}>
                   <Grid item xs={9}>
-                    <Item style={{backgroundColor: 'yellow'}}>{currentUser.username}</Item>
+                    <Item style={{ backgroundColor: 'yellow' }}>{currentUser.username}</Item>
                   </Grid>
                   <Grid item xs={3}>
-                    <Item style={{backgroundColor: 'yellow'}}>{currentUser.score}</Item>
-                  </Grid> 
+                    <Item style={{ backgroundColor: 'yellow' }}>{currentUser.score}</Item>
+                  </Grid>
                 </Grid>
               </Box>
             </>
-          : null
-        }
+            : null
+          }
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setLeaderboardOpen(false)}>Close</Button>

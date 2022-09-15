@@ -1,108 +1,173 @@
+@import url('https://fonts.googleapis.com/css2?family=Audiowide&family=Graduate&display=swap&family=Aboreto&display=swap');
+.myDiv {
+    background-image: url(../src/football.png);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: 100%;
+    overflow: hidden;
+}
+
 .App {
-  text-align: center;
+    text-align: center;
 }
 
 .App-logo {
-  height: 40vmin;
-  pointer-events: none;
+    height: 40vmin;
+    pointer-events: none;
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+    .App-logo {
+        animation: App-logo-spin infinite 20s linear;
+    }
 }
 
 .App-header {
-  text-align: center;
-  background-color: #1e88e5;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(10px + 2vmin);
+    color: white;
+}
+
+.App-header h1 {
+    font-size: 60px;
+    color: black;
+    opacity: 200%;
+    font-family: 'Graduate', cursive;
+    text-transform: uppercase;
+    margin-top: 0;
+    margin-bottom: 40px;
+}
+
+.App-header p {
+    color: black;
+    font-family: 'DejaVu Sans Mono', monospace;
+    margin-top: 0;
+    margin-bottom: 0 0;
 }
 
 .App-link {
-  color: #61dafb;
+    color: #61dafb;
 }
 
 @keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 .container {
-  margin: auto;
-  background-color: white;
-}
-
-.container-black {
-  margin: auto;
-  background-color: #282c34;
+    margin: auto;
 }
 
 .one {
-  background: white;
-  float: left;
-  color: black;
+    float: left;
+    color: white;
 }
 
-.one-black {
-  background: #282c34;
-  float: left;
-  color: white;
+.one h2 {
+    color: black;
+    text-transform: uppercase;
+}
+
+.item-name>div>div {
+    color: rgb(255, 255, 255);
+    background-color: rgba(53, 53, 116, 0.841);
 }
 
 .two {
-  margin-left: 50%;
-  background: white;
-  color: black;
+    margin-left: 50%;
+    color: white;
 }
 
-.two-black {
-  margin-left: 50%;
-  background: #282c34;
-  color: white;
+.two h2 {
+    color: black;
+    text-transform: uppercase;
 }
 
-.button-restart {
-  height: 50px;
-  width: 300px;
-  font-size: 30px;
+.dropdown:after {
+    display: none;
 }
 
-.button-restart-silver {
-  height: 50px;
-  width: 400px;
-  font-size: 30px;
-  background-color: silver;
+.button1 button:disabled,
+.button1 button[disabled] {
+    background-color: lightgray;
+    color: rgba(0, 0, 0, 0.4);
 }
 
-.button-guess {
-  height: 50px;
-  width: 300px;
-  font-size: 20px;
+.button1 button {
+    width: 300px;
+    height: 55px;
+    font-family: 'Roboto', sans-serif;
+    font-size: 15px;
+    text-transform: uppercase;
+    letter-spacing: 2.5px;
+    font-weight: 500;
+    color: #000;
+    background-color: #fff;
+    border: none;
+    border-radius: 45px;
+    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease 0s;
+    cursor: pointer;
+    outline: none;
 }
 
-.button-guess-silver {
-  height: 50px;
-  width: 300px;
-  font-size: 20px;
-  background-color: silver;
+.button1 button:hover {
+    background-color: #2EE59D;
+    box-shadow: 0px 15px 20px rgba(43, 145, 111, 0.61);
+    color: #fff;
+}
+
+.button2 button {
+    margin-right: 45px;
+    text-align: center;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.button2 .btn-hover {
+    width: 250px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #fff;
+    cursor: pointer;
+    height: 55px;
+    text-align: center;
+    border: none;
+    background-size: 300% 100%;
+    border-radius: 25px;
+    -moz-transition: all .4s ease-in-out;
+    -o-transition: all .4s ease-in-out;
+    -webkit-transition: all .4s ease-in-out;
+    transition: all .4s ease-in-out;
+}
+
+.button2 .btn-hover:hover {
+    background-position: 100% 0;
+    -moz-transition: all .4s ease-in-out;
+    -o-transition: all .4s ease-in-out;
+    -webkit-transition: all .4s ease-in-out;
+    transition: all .4s ease-in-out;
+}
+
+.button2 .btn-hover:focus {
+    outline: none;
+}
+
+.button2 .button-restart {
+    background-image: linear-gradient(to right, #29323c, #485563, #2b5876, #4e4376);
+    box-shadow: 0 4px 15px 0 rgba(45, 54, 65, 0.75);
 }
 
 .h2-pad {
-  padding-top: 20px;
-}
-
-.header {
-  font-size: 72px;
-  padding: 0px;
-  margin: 0px;
+    padding-top: 20px;
 }
