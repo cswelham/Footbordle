@@ -9,7 +9,7 @@ import { Auth, API } from 'aws-amplify';
 import { listUsers } from './graphql/queries';
 import { createUser as createUserMutation, updateUser as updateUserMutation } from './graphql/mutations';
 import { GraphQLResult } from '@aws-amplify/api';
-import image from '../src/soccer.png';
+import image from '../src/photos/soccer.png';
 
 // Interface for a player
 interface Player {
@@ -125,6 +125,7 @@ function App(props?: AppProps) {
     height: 40,
   }));
 
+  /*
   const ItemBlue: any = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : theme.palette.primary.main,
     ...theme.typography.body2,
@@ -135,6 +136,7 @@ function App(props?: AppProps) {
     fontSize: 13,
     height: 40,
   }));
+  */
 
   // Retreives json from api
   async function apiCall() {
@@ -552,7 +554,7 @@ function App(props?: AppProps) {
   return (
     <div className='myDiv' style={{ height: height - 1, width: width, overflow: 'hidden' }}>
       <header className="App-header" style={{ height: height * 0.25, width: width }}>
-        <h1>F<img src={image} style={{ height: 50 }}></img><img src={image} style={{ height: 50 }}></img>tbordle</h1>
+        <h1>F<img src={image} alt="Football" style={{ height: 50 }}></img><img src={image} alt="Football" style={{ height: 50 }}></img>tbordle</h1>
         <p>Wordle but for FIFA 22 players! Try to guess the FIFA footballer in 5 guesses to win!</p>
       </header>
 
@@ -589,44 +591,9 @@ function App(props?: AppProps) {
             </Grid>
             {guesses}
           </Box>
-
-          {finished === "L"
-            ? <>
-              <h2>Correct Player</h2>
-              <Box sx={{ flexGrow: 1 }}>
-                <Grid container spacing={0.5} style={{ paddingTop: 10 }}>
-                  <Grid item xs={3}>
-                    <Item style={{ backgroundColor: "yellow" }}>{correctPlayer.label}</Item>
-                  </Grid>
-                  <Grid item xs={9 / 7}>
-                    <Item style={{ backgroundColor: "yellow" }}>{correctPlayer.overall}</Item>
-                  </Grid>
-                  <Grid item xs={9 / 7}>
-                    <Item style={{ backgroundColor: "yellow" }}>{correctPlayer.pace}</Item>
-                  </Grid>
-                  <Grid item xs={9 / 7}>
-                    <Item style={{ backgroundColor: "yellow" }}>{correctPlayer.shooting}</Item>
-                  </Grid>
-                  <Grid item xs={9 / 7}>
-                    <Item style={{ backgroundColor: "yellow" }}>{correctPlayer.passing}</Item>
-                  </Grid>
-                  <Grid item xs={9 / 7}>
-                    <Item style={{ backgroundColor: "yellow" }}>{correctPlayer.dribbling}</Item>
-                  </Grid>
-                  <Grid item xs={9 / 7}>
-                    <Item style={{ backgroundColor: "yellow" }}>{correctPlayer.defending}</Item>
-                  </Grid>
-                  <Grid item xs={9 / 7}>
-                    <Item style={{ backgroundColor: "yellow" }}>{correctPlayer.physical}</Item>
-                  </Grid>
-                </Grid>
-              </Box>
-            </>
-            : null
-          }
         </div>
 
-        <div className="two" style={{ height: height * 0.65, width: width / 2, textAlign: 'center' }}>
+        <div className="two" style={{ height: height * 0.55, width: width / 2, textAlign: 'center' }}>
           <h2 className='h2-pad'>Current Guess</h2>
 
           <Grid className='item-name' container spacing={0.5}>
@@ -735,11 +702,46 @@ function App(props?: AppProps) {
             </Button>
           </div>
 
+          {finished === "L"
+            ? <>
+              <h2 style={{marginBottom: '0'}}>Correct Player</h2>
+              <Box sx={{ flexGrow: 1 }}>
+                <Grid container spacing={0.5} style={{ paddingTop: 23 }}>
+                  <Grid item xs={3}>
+                    <Item style={{ backgroundColor: "yellow" }}>{correctPlayer.label}</Item>
+                  </Grid>
+                  <Grid item xs={9 / 7}>
+                    <Item style={{ backgroundColor: "yellow" }}>{correctPlayer.overall}</Item>
+                  </Grid>
+                  <Grid item xs={9 / 7}>
+                    <Item style={{ backgroundColor: "yellow" }}>{correctPlayer.pace}</Item>
+                  </Grid>
+                  <Grid item xs={9 / 7}>
+                    <Item style={{ backgroundColor: "yellow" }}>{correctPlayer.shooting}</Item>
+                  </Grid>
+                  <Grid item xs={9 / 7}>
+                    <Item style={{ backgroundColor: "yellow" }}>{correctPlayer.passing}</Item>
+                  </Grid>
+                  <Grid item xs={9 / 7}>
+                    <Item style={{ backgroundColor: "yellow" }}>{correctPlayer.dribbling}</Item>
+                  </Grid>
+                  <Grid item xs={9 / 7}>
+                    <Item style={{ backgroundColor: "yellow" }}>{correctPlayer.defending}</Item>
+                  </Grid>
+                  <Grid item xs={9 / 7}>
+                    <Item style={{ backgroundColor: "yellow" }}>{correctPlayer.physical}</Item>
+                  </Grid>
+                </Grid>
+              </Box>
+            </>
+            : null
+          }
+
         </div>
 
       </section>
 
-      <div className='button2' style={{ height: height * 0.1 - 1, width: width, textAlign: 'center' }}>
+      <div className='button2' style={{ height: height * 0.2 - 1, width: width, textAlign: 'center' }}>
         <Button variant="contained" className='btn-hover button-restart' onClick={() => setInstructionsOpen(true)}>
           <b>Instructions</b>
         </Button>
@@ -792,7 +794,7 @@ function App(props?: AppProps) {
               <DialogContentText> You took {numberGuesses().toString()} guesses! </DialogContentText>
               <DialogContentText> The player was {correctPlayer.label}. </DialogContentText>
               {correctPlayer.image !== undefined
-                ? <img src={correctPlayer.image} alt="Correct football player" />
+                ? <img src={correctPlayer.image} alt="Correct football player"/>
                 : null
               }
             </>
@@ -811,7 +813,7 @@ function App(props?: AppProps) {
             ? <>
               <DialogContentText> The player was {correctPlayer.label}. </DialogContentText>
               {correctPlayer.image !== undefined
-                ? <img src={correctPlayer.image} alt="Correct football player" />
+                ? <img src={correctPlayer.image} alt="Correct football player"/>
                 : null
               }
             </>

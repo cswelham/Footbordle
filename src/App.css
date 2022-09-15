@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Audiowide&family=Graduate&display=swap&family=Aboreto&display=swap');
 .myDiv {
-    background-image: url(../src/football.png);
+    background-image: url(../src/photos/football.png);
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
