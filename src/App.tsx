@@ -13,6 +13,7 @@ import image from '../src/photos/soccer.png';
 
 // Interface for a player
 interface Player {
+  id: number,
   label: string,
   overall: number,
   pace: number,
@@ -22,6 +23,16 @@ interface Player {
   defending: number,
   physical: number,
   image?: string
+}
+
+interface GuessHighLow {
+  overall: number,
+  pace: number,
+  shooting: number,
+  passing: number,
+  dribbling: number,
+  defending: number,
+  physical: number,
 }
 
 // Interface for a user
@@ -48,31 +59,40 @@ function App(props?: AppProps) {
 
   // List of all footballers
   const playerListManual: Player[] = [
-    { label: 'Lionel Messi', overall: 93, pace: 85, shooting: 92, passing: 91, dribbling: 95, defending: 34, physical: 60 },
-    { label: 'Robert Lewandowski', overall: 92, pace: 78, shooting: 92, passing: 79, dribbling: 86, defending: 44, physical: 82 },
-    { label: 'Cristiano Ronaldo', overall: 91, pace: 87, shooting: 94, passing: 80, dribbling: 88, defending: 34, physical: 75 },
-    { label: 'Neymar Jr', overall: 91, pace: 91, shooting: 83, passing: 86, dribbling: 94, defending: 37, physical: 63 },
-    { label: 'Kevin De Bruyne', overall: 91, pace: 76, shooting: 86, passing: 93, dribbling: 88, defending: 64, physical: 78 },
-    { label: 'Kylian Mbappe', overall: 91, pace: 97, shooting: 88, passing: 80, dribbling: 92, defending: 36, physical: 77 },
-    { label: 'Harry Kane', overall: 90, pace: 70, shooting: 91, passing: 83, dribbling: 83, defending: 47, physical: 83 },
-    { label: 'Ngolo Kante', overall: 89, pace: 78, shooting: 66, passing: 75, dribbling: 82, defending: 87, physical: 83 },
-    { label: 'Karim Benzema', overall: 89, pace: 76, shooting: 86, passing: 81, dribbling: 87, defending: 39, physical: 77 },
-    { label: 'Heung Min Son', overall: 89, pace: 88, shooting: 87, passing: 82, dribbling: 86, defending: 43, physical: 69 },
+    { id: 1, label: 'Lionel Messi', overall: 93, pace: 85, shooting: 92, passing: 91, dribbling: 95, defending: 34, physical: 60 },
+    { id: 2, label: 'Robert Lewandowski', overall: 92, pace: 78, shooting: 92, passing: 79, dribbling: 86, defending: 44, physical: 82 },
+    { id: 3, label: 'Cristiano Ronaldo', overall: 91, pace: 87, shooting: 94, passing: 80, dribbling: 88, defending: 34, physical: 75 },
+    { id: 4, label: 'Neymar Jr', overall: 91, pace: 91, shooting: 83, passing: 86, dribbling: 94, defending: 37, physical: 63 },
+    { id: 5, label: 'Kevin De Bruyne', overall: 91, pace: 76, shooting: 86, passing: 93, dribbling: 88, defending: 64, physical: 78 },
+    { id: 6, label: 'Kylian Mbappe', overall: 91, pace: 97, shooting: 88, passing: 80, dribbling: 92, defending: 36, physical: 77 },
+    { id: 7, label: 'Harry Kane', overall: 90, pace: 70, shooting: 91, passing: 83, dribbling: 83, defending: 47, physical: 83 },
+    { id: 8, label: 'Ngolo Kante', overall: 89, pace: 78, shooting: 66, passing: 75, dribbling: 82, defending: 87, physical: 83 },
+    { id: 9, label: 'Karim Benzema', overall: 89, pace: 76, shooting: 86, passing: 81, dribbling: 87, defending: 39, physical: 77 },
+    { id: 10, label: 'Heung Min Son', overall: 89, pace: 88, shooting: 87, passing: 82, dribbling: 86, defending: 43, physical: 69 },
   ];
 
   // Holds player to guess
-  const [correctPlayer, setCorrectPlayer] = useState<Player>(playerList[Math.floor(Math.random() * playerList.length)]);
+  const [correctPlayer, setCorrectPlayer] = useState<Player>(playerListManual[Math.floor(Math.random() * playerList.length)]);
   // Holds if user has finished
   const [finished, setFinished] = useState<string>('');
 
   // Holds guessed players
   const [guessedPlayers, setGuessedPlayers] = useState<Player[]>([
-    { label: 'Placeholder', overall: 99, pace: 0, shooting: 0, passing: 0, dribbling: 0, defending: 0, physical: 0 },
-    { label: 'Placeholder', overall: 99, pace: 0, shooting: 0, passing: 0, dribbling: 0, defending: 0, physical: 0 },
-    { label: 'Placeholder', overall: 99, pace: 0, shooting: 0, passing: 0, dribbling: 0, defending: 0, physical: 0 },
-    { label: 'Placeholder', overall: 99, pace: 0, shooting: 0, passing: 0, dribbling: 0, defending: 0, physical: 0 },
-    { label: 'Placeholder', overall: 99, pace: 0, shooting: 0, passing: 0, dribbling: 0, defending: 0, physical: 0 },
-    { label: 'Placeholder', overall: 99, pace: 0, shooting: 0, passing: 0, dribbling: 0, defending: 0, physical: 0 },
+    { id: 1, label: 'Placeholder', overall: 99, pace: 0, shooting: 0, passing: 0, dribbling: 0, defending: 0, physical: 0 },
+    { id: 2, label: 'Placeholder', overall: 99, pace: 0, shooting: 0, passing: 0, dribbling: 0, defending: 0, physical: 0 },
+    { id: 3, label: 'Placeholder', overall: 99, pace: 0, shooting: 0, passing: 0, dribbling: 0, defending: 0, physical: 0 },
+    { id: 4, label: 'Placeholder', overall: 99, pace: 0, shooting: 0, passing: 0, dribbling: 0, defending: 0, physical: 0 },
+    { id: 5, label: 'Placeholder', overall: 99, pace: 0, shooting: 0, passing: 0, dribbling: 0, defending: 0, physical: 0 },
+    { id: 6, label: 'Placeholder', overall: 99, pace: 0, shooting: 0, passing: 0, dribbling: 0, defending: 0, physical: 0 },
+  ]);
+  // Holds guessed stats
+  const [guessedStats, setGuessedStats] = useState<GuessHighLow[]>([
+    {overall: -2, pace: -2, shooting: -2, passing: -2, dribbling: -2, defending: -2, physical: -2},
+    {overall: -2, pace: -2, shooting: -2, passing: -2, dribbling: -2, defending: -2, physical: -2},
+    {overall: -2, pace: -2, shooting: -2, passing: -2, dribbling: -2, defending: -2, physical: -2},
+    {overall: -2, pace: -2, shooting: -2, passing: -2, dribbling: -2, defending: -2, physical: -2},
+    {overall: -2, pace: -2, shooting: -2, passing: -2, dribbling: -2, defending: -2, physical: -2},
+    {overall: -2, pace: -2, shooting: -2, passing: -2, dribbling: -2, defending: -2, physical: -2},
   ]);
 
   // Variables to store current selected stats
@@ -125,38 +145,23 @@ function App(props?: AppProps) {
     height: 40,
   }));
 
-  /*
-  const ItemBlue: any = styled(Paper)(({ theme }) => ({
-    backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : theme.palette.primary.main,
-    ...theme.typography.body2,
-    padding: theme.spacing(1),
-    textAlign: 'center',
-    verticalAlign: 'center',
-    color: 'white',
-    fontSize: 13,
-    height: 40,
-  }));
-  */
-
   // Retreives json from api
-  async function apiCall() {
+  async function playerApiCall() {
     try {
       // Get session token
       var token: any = await Auth.currentSession().then(session => session).catch(err => console.log(err));
       // Call api
-      const query = await fetch('https://r90ugk5s0f.execute-api.us-east-1.amazonaws.com/players', {
+      const query = await fetch('https://qo0jt72i36.execute-api.us-east-1.amazonaws.com/players', {
         method: 'GET',
         headers: {
           Authorization: token.idToken.jwtToken,
         },
       });
-      const json = await query.json()
+      const json = await query.json();
       if (apiArray === undefined) {
         setApiArray(json);
         // Set autocomplete loading to false
         setAcLoading(false);
-        console.log("Players:");
-        console.log(json);
       }
       // Retrieve the user's username and email
       Auth.currentAuthenticatedUser().then((user) => {
@@ -191,7 +196,7 @@ function App(props?: AppProps) {
     newUserList = orderUserArray(newUserList);
     setUserList(newUserList);
     try {
-      apiCall();
+      playerApiCall();
       // Create the list of players from api array
       var newPlayerList: Player[] = []
       if (apiArray !== undefined) {
@@ -200,7 +205,7 @@ function App(props?: AppProps) {
         newPlayerList = newApiArray.map((p: any) => {
           return (
             {
-              label: p.name, overall: p.overall, pace: p.pace, shooting: p.shooting, passing: p.passing,
+              id: p.id, label: p.name, overall: p.overall, pace: p.pace, shooting: p.shooting, passing: p.passing,
               dribbling: p.dribbling, defending: p.defending, physical: p.physical, image: p.faceurl
             }
           )
@@ -208,8 +213,6 @@ function App(props?: AppProps) {
         // Set player list
         setPlayerList(newPlayerList);
         setPossibleList(newPlayerList);
-        // Set the correct player
-        setCorrectPlayer((newPlayerList[Math.floor(Math.random() * newPlayerList.length)]));
       };
     }
     // Api not working
@@ -272,7 +275,8 @@ function App(props?: AppProps) {
       // Add one to score
       var newUserList: User[] = [...userList];
       newUserList[current].score = Number(newUserList[current].score) + 1;
-      await API.graphql({ query: updateUserMutation, variables: { input: { id: newUserList[current].id, username: currentUser.username, score: (Number(newUserList[current].score) + 1) } } });
+      await API.graphql({ query: updateUserMutation, variables: { input: { id: newUserList[current].id, username: currentUser.username, 
+        score: (Number(newUserList[current].score) + 1) } } });
       newUserList = orderUserArray(newUserList);
       setUserList(newUserList);
       setCurrentUser({ id: newUserList[current].id, username: currentUser.username, score: (Number(currentUser.score) + 1) });
@@ -321,72 +325,96 @@ function App(props?: AppProps) {
   }
 
   // User guesses player
-  function onGuess() {
+  async function onGuess() {
     // Add to guessed players
     var newGuessedPlayers: Player[] = [...guessedPlayers];
     const index: number = newGuessedPlayers.findIndex((p: Player) => p.label === "Placeholder");
     newGuessedPlayers[index] = currentPlayer!;
     setGuessedPlayers(newGuessedPlayers);
-    // Users selects correct player
-    if (correctPlayer.label === currentPlayer!.label) {
-      setFinished('W');
-      setTimeout(() => setWinOpen(true), 500);
-    }
-    // User selects wrong
-    else {
-      // If out of guesses
-      if (index === 5) {
+
+    // Get session token
+    var token: any = await Auth.currentSession().then(session => session).catch(err => console.log(err));
+    // Call guess api
+    const query = await fetch(`https://qo0jt72i36.execute-api.us-east-1.amazonaws.com/guess?playerID=${currentPlayer!.id}`, {
+      method: 'POST',
+      headers: {
+        Authorization: token.idToken.jwtToken,
+      },
+    });
+    const json = await query.json();
+    var newGuessedStats: GuessHighLow[] = [...guessedStats];
+    newGuessedStats[index] =  {overall: json.overall, pace: json.pace, shooting: json.shooting, passing: json.passing, dribbling: json.dribbling, 
+      defending: json.defending, physical: json.physical};
+    setGuessedStats(newGuessedStats);
+
+    // If the api returns a player
+    if (json.id !== undefined) {
+      // Set correct player
+      setCorrectPlayer({ id: json.id, label: json.name, overall: json.overall, pace: json.pace, shooting: json.shooting, passing: json.passing, dribbling: json.dribbling, 
+        defending: json.defending, physical: json.physical, image: json.faceurl});
+      // If guessed player is correct
+      if (json.id === currentPlayer!.id) {
+        setFinished('W');
+        setTimeout(() => setWinOpen(true), 500);
+      }
+      else {
         setFinished('L');
         setTimeout(() => setLoseOpen(true), 500);
       }
-      else {
-        var low: number = 0;
-        var high: number = 99;
-        var correct: boolean = false;
-        for (let i = 0; i < newGuessedPlayers.length; i++) {
-          var overall: number = newGuessedPlayers[i].overall;
-          // If overall guessed correctly
-          if (overall === correctPlayer.overall) {
-            correct = true;
-            low = overall
-            break;
-          }
-          // Get lowest overall range
-          else if (overall < correctPlayer.overall) {
-            if (overall > low)
-              low = overall;
-          }
-          // Get highest overall range
-          else {
-            if (overall < high)
-              high = overall;
-          }
+    }
+    else {
+      var low: number = 0;
+      var high: number = 99;
+      var correct: boolean = false;
+      for (let i = 0; i < newGuessedPlayers.length; i++) {
+        var overall: number = newGuessedPlayers[i].overall;
+        // If overall guessed correctly
+        if (guessedStats[i].overall === 0) {
+          correct = true;
+          low = overall
+          break;
         }
-        // Filter the possible players by the range
-        var newPossibleList: Player[] = [...possibleList];
-        if (!correct)
-          newPossibleList = newPossibleList.filter((p: Player) => p.overall > low && p.overall < high);
-        else
-          newPossibleList = newPossibleList.filter((p: Player) => p.overall === low);
-        setPossibleList(newPossibleList);
+        // Get lowest overall range
+        else if (guessedStats[i].overall === 1) {
+          if (overall > low)
+            low = overall;
+        }
+        // Get highest overall range
+        else {
+          if (overall < high)
+            high = overall;
+        }
       }
+      // Filter the possible players by the range
+      var newPossibleList: Player[] = [...possibleList];
+      if (!correct)
+        newPossibleList = newPossibleList.filter((p: Player) => p.overall > low && p.overall < high);
+      else
+        newPossibleList = newPossibleList.filter((p: Player) => p.overall === low);
+      setPossibleList(newPossibleList);
     }
   }
 
   // User clicks restart
-  function onRestart() {
+  async function onRestart() {
     setAcValue(null);
-    // Pick new player
-    setCorrectPlayer((playerList[Math.floor(Math.random() * playerList.length)]));
     // Reset variables
     setFinished('');
     setGuessedPlayers([
-      { label: 'Placeholder', overall: 0, pace: 0, shooting: 0, passing: 0, dribbling: 0, defending: 0, physical: 0 },
-      { label: 'Placeholder', overall: 0, pace: 0, shooting: 0, passing: 0, dribbling: 0, defending: 0, physical: 0 },
-      { label: 'Placeholder', overall: 0, pace: 0, shooting: 0, passing: 0, dribbling: 0, defending: 0, physical: 0 },
-      { label: 'Placeholder', overall: 0, pace: 0, shooting: 0, passing: 0, dribbling: 0, defending: 0, physical: 0 },
-      { label: 'Placeholder', overall: 0, pace: 0, shooting: 0, passing: 0, dribbling: 0, defending: 0, physical: 0 },
-      { label: 'Placeholder', overall: 0, pace: 0, shooting: 0, passing: 0, dribbling: 0, defending: 0, physical: 0 },
+      { id: 1, label: 'Placeholder', overall: 0, pace: 0, shooting: 0, passing: 0, dribbling: 0, defending: 0, physical: 0 },
+      { id: 2, label: 'Placeholder', overall: 0, pace: 0, shooting: 0, passing: 0, dribbling: 0, defending: 0, physical: 0 },
+      { id: 3, label: 'Placeholder', overall: 0, pace: 0, shooting: 0, passing: 0, dribbling: 0, defending: 0, physical: 0 },
+      { id: 4, label: 'Placeholder', overall: 0, pace: 0, shooting: 0, passing: 0, dribbling: 0, defending: 0, physical: 0 },
+      { id: 5, label: 'Placeholder', overall: 0, pace: 0, shooting: 0, passing: 0, dribbling: 0, defending: 0, physical: 0 },
+      { id: 6, label: 'Placeholder', overall: 0, pace: 0, shooting: 0, passing: 0, dribbling: 0, defending: 0, physical: 0 },
+    ]);
+    setGuessedStats([
+      {overall: -2, pace: -2, shooting: -2, passing: -2, dribbling: -2, defending: -2, physical: -2},
+      {overall: -2, pace: -2, shooting: -2, passing: -2, dribbling: -2, defending: -2, physical: -2},
+      {overall: -2, pace: -2, shooting: -2, passing: -2, dribbling: -2, defending: -2, physical: -2},
+      {overall: -2, pace: -2, shooting: -2, passing: -2, dribbling: -2, defending: -2, physical: -2},
+      {overall: -2, pace: -2, shooting: -2, passing: -2, dribbling: -2, defending: -2, physical: -2},
+      {overall: -2, pace: -2, shooting: -2, passing: -2, dribbling: -2, defending: -2, physical: -2},
     ]);
     setCurrentPlayer(undefined);
     setCurrentOverall('');
@@ -397,10 +425,33 @@ function App(props?: AppProps) {
     setCurrentDefending('');
     setCurrentPhysical('');
     setPossibleList([...playerList]);
+
+    // Get session token
+    var token: any = await Auth.currentSession().then(session => session).catch(err => console.log(err));
+    // Call newgame api
+    await fetch('https://qo0jt72i36.execute-api.us-east-1.amazonaws.com/newgame', {
+      method: 'POST',
+      headers: {
+        Authorization: token.idToken.jwtToken,
+      },
+    });
   }
 
   // Determines colour of grid item
-  function gridItemColour(value1: number, value2: number) {
+  function gridItemColour(value: number) {
+    if (value === 1) {
+      return 'lightgreen';
+    }
+    else if (value === -1) {
+      return "#ffcccb";
+    }
+    else {
+      return "yellow";
+    }
+  }
+
+  // Determines colour of grid item for last guess
+  function gridItemColourLast(value1: number, value2: number) {
     if (value1 < value2) {
       return 'lightgreen';
     }
@@ -417,7 +468,7 @@ function App(props?: AppProps) {
     // Get session token
     var token: any = await Auth.currentSession().then(session => session).catch(err => console.log(err));
     // Call api
-    await fetch('https://r90ugk5s0f.execute-api.us-east-1.amazonaws.com/subscribe', {
+    await fetch('https://qo0jt72i36.execute-api.us-east-1.amazonaws.com/subscribe', {
       method: 'POST',
       body: currentEmail,
       headers: {
@@ -502,8 +553,8 @@ function App(props?: AppProps) {
 
   // Renders the guessed players
   const guesses = useMemo(() => guessedPlayers.map(
-    (guess: Player) => {
-      if (guess.label === "Placeholder") {
+    (guess: Player, index: number) => {
+      if (guess.label === "Placeholder" && guessedStats[index].overall === -2) {
         return (
           <Grid container spacing={0.5} style={{ paddingTop: 10 }}>
             <Grid item xs={3}> <Item></Item>  </Grid>
@@ -517,6 +568,36 @@ function App(props?: AppProps) {
           </Grid>
         )
       }
+      else if (index === 5) {
+        return (
+          <Grid container spacing={0.5} style={{ paddingTop: 10 }}>
+            <Grid item xs={3}>
+              <Item>{guess.label}</Item>
+            </Grid>
+            <Grid item xs={9 / 7}>
+              <Item style={{ backgroundColor: gridItemColourLast(currentPlayer!.overall, guessedStats[index].overall) }}>{guess.overall}</Item>
+            </Grid>
+            <Grid item xs={9 / 7}>
+              <Item style={{ backgroundColor: gridItemColourLast(currentPlayer!.pace, guessedStats[index].pace) }}>{guess.pace}</Item>
+            </Grid>
+            <Grid item xs={9 / 7}>
+              <Item style={{ backgroundColor: gridItemColourLast(currentPlayer!.shooting, guessedStats[index].shooting) }}>{guess.shooting}</Item>
+            </Grid>
+            <Grid item xs={9 / 7}>
+              <Item style={{ backgroundColor: gridItemColourLast(currentPlayer!.passing, guessedStats[index].passing) }}>{guess.passing}</Item>
+            </Grid>
+            <Grid item xs={9 / 7}>
+              <Item style={{ backgroundColor: gridItemColourLast(currentPlayer!.dribbling, guessedStats[index].dribbling) }}>{guessedPlayers[0].dribbling}</Item>
+            </Grid>
+            <Grid item xs={9 / 7}>
+              <Item style={{ backgroundColor: gridItemColourLast(currentPlayer!.defending, guessedStats[index].defending) }}>{guess.defending}</Item>
+            </Grid>
+            <Grid item xs={9 / 7}>
+              <Item style={{ backgroundColor: gridItemColourLast(currentPlayer!.physical, guessedStats[index].physical) }}>{guess.physical}</Item>
+            </Grid>
+          </Grid>
+        )
+      }
       else {
         return (
           <Grid container spacing={0.5} style={{ paddingTop: 10 }}>
@@ -524,38 +605,38 @@ function App(props?: AppProps) {
               <Item>{guess.label}</Item>
             </Grid>
             <Grid item xs={9 / 7}>
-              <Item style={{ backgroundColor: gridItemColour(guess.overall, correctPlayer.overall) }}>{guess.overall}</Item>
+              <Item style={{ backgroundColor: gridItemColour(guessedStats[index].overall) }}>{guess.overall}</Item>
             </Grid>
             <Grid item xs={9 / 7}>
-              <Item style={{ backgroundColor: gridItemColour(guess.pace, correctPlayer.pace) }}>{guess.pace}</Item>
+              <Item style={{ backgroundColor: gridItemColour(guessedStats[index].pace) }}>{guess.pace}</Item>
             </Grid>
             <Grid item xs={9 / 7}>
-              <Item style={{ backgroundColor: gridItemColour(guess.shooting, correctPlayer.shooting) }}>{guess.shooting}</Item>
+              <Item style={{ backgroundColor: gridItemColour(guessedStats[index].shooting) }}>{guess.shooting}</Item>
             </Grid>
             <Grid item xs={9 / 7}>
-              <Item style={{ backgroundColor: gridItemColour(guess.passing, correctPlayer.passing) }}>{guess.passing}</Item>
+              <Item style={{ backgroundColor: gridItemColour(guessedStats[index].passing) }}>{guess.passing}</Item>
             </Grid>
             <Grid item xs={9 / 7}>
-              <Item style={{ backgroundColor: gridItemColour(guess.dribbling, correctPlayer.dribbling) }}>{guessedPlayers[0].dribbling}</Item>
+              <Item style={{ backgroundColor: gridItemColour(guessedStats[index].dribbling) }}>{guessedPlayers[0].dribbling}</Item>
             </Grid>
             <Grid item xs={9 / 7}>
-              <Item style={{ backgroundColor: gridItemColour(guess.defending, correctPlayer.defending) }}>{guess.defending}</Item>
+              <Item style={{ backgroundColor: gridItemColour(guessedStats[index].defending) }}>{guess.defending}</Item>
             </Grid>
             <Grid item xs={9 / 7}>
-              <Item style={{ backgroundColor: gridItemColour(guess.physical, correctPlayer.physical) }}>{guess.physical}</Item>
+              <Item style={{ backgroundColor: gridItemColour(guessedStats[index].physical) }}>{guess.physical}</Item>
             </Grid>
           </Grid>
         )
       }
     }
     // eslint-disable-next-line
-  ), [guessedPlayers]);
+  ), [guessedStats]);
 
   return (
     <div className='myDiv' style={{ height: height - 1, width: width, overflow: 'hidden' }}>
       <header className="App-header" style={{ height: height * 0.25, width: width }}>
         <h1>F<img src={image} alt="Football" style={{ height: 50 }}></img><img src={image} alt="Football" style={{ height: 50 }}></img>tbordle</h1>
-        <p>Wordle but for FIFA 22 players! Try to guess the FIFA footballer in 5 guesses to win!</p>
+        <p>Wordle but for FIFA 22 players! Try to guess the FIFA footballer in 6 guesses to win!</p>
       </header>
 
       <section className="container" style={{ height: height * 0.65, width: width }}>
@@ -792,7 +873,8 @@ function App(props?: AppProps) {
           {guessedPlayers !== undefined && correctPlayer !== undefined
             ? <>
               <DialogContentText> You took {numberGuesses().toString()} guesses! </DialogContentText>
-              <DialogContentText> The player was {correctPlayer.label}. </DialogContentText>
+              <DialogContentText> The player was:</DialogContentText>
+              <DialogContentText>{correctPlayer.label}</DialogContentText>
               {correctPlayer.image !== undefined
                 ? <img src={correctPlayer.image} alt="Correct football player"/>
                 : null
@@ -811,7 +893,8 @@ function App(props?: AppProps) {
         <DialogContent>
           {correctPlayer !== undefined
             ? <>
-              <DialogContentText> The player was {correctPlayer.label}. </DialogContentText>
+              <DialogContentText> The player was:</DialogContentText>
+              <DialogContentText>{correctPlayer.label}</DialogContentText>
               {correctPlayer.image !== undefined
                 ? <img src={correctPlayer.image} alt="Correct football player"/>
                 : null
