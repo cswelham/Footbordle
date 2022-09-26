@@ -129,6 +129,8 @@ function App(props?: AppProps) {
     limit: 30,
     stringify: (option: Player) => option.label,
   });
+  // Holds if the user can guess
+  const [canGuess, setCanGuess] = useState<boolean>(true);
 
 
   // Holds height and width of screen
@@ -326,6 +328,10 @@ function App(props?: AppProps) {
 
   // User guesses player
   async function onGuess() {
+    // Set timeout for guessing 1.5 seconds
+    setCanGuess(false);
+    setTimeout(() => { setCanGuess(true) }, 1500);
+
     // Add to guessed players
     var newGuessedPlayers: Player[] = [...guessedPlayers];
     const index: number = newGuessedPlayers.findIndex((p: Player) => p.label === "Placeholder");
@@ -366,16 +372,18 @@ function App(props?: AppProps) {
       var low: number = 0;
       var high: number = 99;
       var correct: boolean = false;
-      for (let i = 0; i < newGuessedPlayers.length; i++) {
+      var statsFiltered = newGuessedStats.filter((g: GuessHighLow) => g.overall !== -2);
+      console.log(statsFiltered);
+      for (let i = 0; i < statsFiltered.length; i++) {
         var overall: number = newGuessedPlayers[i].overall;
         // If overall guessed correctly
-        if (guessedStats[i].overall === 0) {
+        if (statsFiltered[i].overall === 0) {
           correct = true;
           low = overall
           break;
         }
         // Get lowest overall range
-        else if (guessedStats[i].overall === 1) {
+        else if (statsFiltered[i].overall === 1) {
           if (overall > low)
             low = overall;
         }
@@ -778,7 +786,7 @@ function App(props?: AppProps) {
           </div>
 
           <div className='button1'>
-            <Button variant="contained" className="btn-hover button-guess" onClick={onGuess} disabled={currentPlayer === undefined || finished !== ''}>
+            <Button variant="contained" className="btn-hover button-guess" onClick={onGuess} disabled={currentPlayer === undefined || finished !== '' || !canGuess}>
               <b>Guess</b>
             </Button>
           </div>
