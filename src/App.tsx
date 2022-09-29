@@ -625,7 +625,7 @@ function App(props?: AppProps) {
               <Item style={{ backgroundColor: gridItemColour(guessedStats[index].passing) }}>{guess.passing}</Item>
             </Grid>
             <Grid item xs={9 / 7}>
-              <Item style={{ backgroundColor: gridItemColour(guessedStats[index].dribbling) }}>{guessedPlayers[0].dribbling}</Item>
+              <Item style={{ backgroundColor: gridItemColour(guessedStats[index].dribbling) }}>{guess.dribbling}</Item>
             </Grid>
             <Grid item xs={9 / 7}>
               <Item style={{ backgroundColor: gridItemColour(guessedStats[index].defending) }}>{guess.defending}</Item>
